@@ -1,0 +1,79 @@
+name: Bug Report
+description: Report something that is broken or behaving unexpectedly in Cosmic Pulse.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping test Cosmic Pulse. Please include enough detail for the problem to be reproduced.
+
+        Review any diagnostics before posting. Do not include account credentials, authentication tokens, personally identifying information, or unrelated private logs.
+
+  - type: input
+    id: version
+    attributes:
+      label: Cosmic Pulse version
+      description: Example: v0.1.0-alpha.0
+      placeholder: v0.1.0-alpha.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: star_citizen_environment
+    attributes:
+      label: Star Citizen environment
+      options:
+        - LIVE
+        - PTU
+        - EPTU
+        - Other / Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: star_citizen_version
+    attributes:
+      label: Star Citizen version / build
+      description: Add the game version or build number if known.
+      placeholder: Example: Alpha 4.x
+
+  - type: input
+    id: windows_version
+    attributes:
+      label: Windows version
+      placeholder: Example: Windows 11 25H2
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected to happen instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Cosmic Pulse
+        2. Launch Star Citizen
+        3. ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Cosmic Pulse diagnostics
+      description: Paste relevant Cosmic Pulse diagnostic output here if available. Review it before posting.
+      render: text
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / additional context
+      description: Drag screenshots here or add any other useful details.

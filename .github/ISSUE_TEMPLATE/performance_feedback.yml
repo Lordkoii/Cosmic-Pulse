@@ -1,0 +1,113 @@
+name: Performance / Diagnosis Feedback
+description: Tell us when a Cosmic Pulse performance diagnosis seems inaccurate, incomplete, or especially useful.
+title: "[Performance]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Performance feedback helps improve Cosmic Pulse's diagnostic rules. Please include the scenario and hardware context that produced the result.
+
+        Review diagnostics before posting. Do not include account credentials, authentication tokens, personally identifying information, or unrelated private logs.
+
+  - type: input
+    id: version
+    attributes:
+      label: Cosmic Pulse version
+      description: Example: v0.1.0-alpha.4
+      placeholder: v0.1.0-alpha.4
+    validations:
+      required: true
+
+  - type: dropdown
+    id: star_citizen_environment
+    attributes:
+      label: Star Citizen environment
+      options:
+        - LIVE
+        - PTU
+        - EPTU
+        - Other / Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: star_citizen_version
+    attributes:
+      label: Star Citizen version / build
+      placeholder: Example: Alpha 4.x
+
+  - type: input
+    id: cpu
+    attributes:
+      label: CPU
+      placeholder: Example: AMD Ryzen 7 7800X3D
+    validations:
+      required: true
+
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU
+      placeholder: Example: NVIDIA GeForce RTX 4080
+    validations:
+      required: true
+
+  - type: input
+    id: ram
+    attributes:
+      label: System RAM
+      placeholder: Example: 32 GB DDR5
+    validations:
+      required: true
+
+  - type: input
+    id: resolution
+    attributes:
+      label: Resolution
+      placeholder: Example: 2560x1440
+    validations:
+      required: true
+
+  - type: textarea
+    id: scenario
+    attributes:
+      label: What were you doing in Star Citizen?
+      description: Include location and activity when useful — city, station, space, ship combat, quantum travel, etc.
+      placeholder: Example: Standing in Area18 after loading into the PU for about 10 minutes.
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnosis
+    attributes:
+      label: What did Cosmic Pulse report?
+      description: Include the finding, confidence, recommendation, or other diagnostic result.
+    validations:
+      required: true
+
+  - type: textarea
+    id: concern
+    attributes:
+      label: What seems inaccurate or incomplete?
+      description: Explain why the result did or did not match what you observed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: observed_performance
+    attributes:
+      label: Observed performance
+      description: Add FPS, frame-time behavior, stutters, utilization, or other observations if known.
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Cosmic Pulse diagnostics
+      description: Paste relevant exported or copied diagnostic data here if available. Review it before posting.
+      render: text
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / additional context
+      description: Drag screenshots here or add any other useful details.

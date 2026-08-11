@@ -1,0 +1,44 @@
+Cosmic Pulse Proprietary License
+
+Copyright (c) 2026 Lordkoii. All rights reserved.
+
+This software, including its compiled binaries, documentation, artwork,
+branding, and other associated files (collectively, the "Software"), is
+proprietary to Lordkoii unless otherwise stated for a specific third-party
+component.
+
+Permission is granted to download, install, and use an official compiled release
+of the Software for personal, non-commercial evaluation and personal use.
+
+No permission is granted to copy, reproduce, modify, adapt, translate, publish,
+distribute, mirror, republish, sublicense, sell, rent, lease, rebrand, commercially
+exploit, or create derivative works from the Software, in whole or in substantial
+part, without prior written permission from Lordkoii.
+
+You may not remove, obscure, or alter copyright, ownership, attribution,
+trademark, or proprietary notices included with the Software.
+
+Access to Cosmic Pulse source code, whether through a private repository, direct
+sharing, accidental disclosure, or any other means, does not grant a license to
+reuse, redistribute, modify, publish, or create derivative software from that
+source code.
+
+Reverse engineering, decompilation, or disassembly of distributed binaries is
+not permitted except to the limited extent that applicable law expressly
+prohibits this restriction.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED
+BY LAW, THE COPYRIGHT HOLDER SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+OTHER LIABILITY ARISING FROM OR RELATED TO THE SOFTWARE OR ITS USE.
+
+Third-party software and components included with an official Cosmic Pulse
+binary release are not licensed under this proprietary license. They remain
+subject to their respective copyright notices, licenses, and terms. See
+THIRD-PARTY-NOTICES.txt when distributed with an official build.
+
+Third-party names, trademarks, services, and software remain the property of
+their respective owners.
+
+Any rights not expressly granted by this license are reserved by Lordkoii.
