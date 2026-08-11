@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Security issue
+    url: https://github.com/Lordkoii/Cosmic-Pulse/security/policy
+    about: Report security-sensitive findings privately; do not post vulnerability details in a public issue.
