@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.3 — GPU Telemetry</code>
+  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.4 — PulseCheck</code>
 </p>
 <!-- AUTO_HERO_RELEASE_END -->
 
@@ -95,9 +95,19 @@ Current development focus:
 - Windows-native GPU utilization telemetry
 - dedicated VRAM usage and GPU identity
 
-### PulseCheck — Planned
+### PulseCheck — In development
 
-Analyzes a gameplay session and identifies probable CPU, GPU, memory, frame-time, or system constraints.
+The first performance-intelligence layer correlates a rolling telemetry window instead of judging single readings.
+
+Alpha.4 currently distinguishes conservative signatures for:
+
+- CPU Limited
+- GPU Limited
+- Memory Pressure
+- Possibly Capped / VSync / menu-limited behavior
+- Undetermined when the evidence is not strong enough
+
+Each ready result includes a confidence level and supporting evidence. The current CPU classification remains intentionally cautious until richer per-core/thread correlation is added.
 
 ### PulseCompare — Planned
 
@@ -118,7 +128,7 @@ Cosmic Pulse is in **private alpha development** and is being built incrementall
 The current development milestone is:
 
 ```text
-v0.1.0-alpha.3 — GPU Telemetry
+v0.1.0-alpha.4 — PulseCheck
 ```
 
 There is **no public build available yet**. Public downloads will appear here only after a build has been tested and is ready for community evaluation.
