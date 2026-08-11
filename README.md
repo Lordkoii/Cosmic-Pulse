@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <strong>Current internal milestone:</strong> <code>v0.1.0-alpha.0 — Pulse Core</code>
+  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.0 — Pulse Core</code>
 </p>
 <!-- AUTO_HERO_RELEASE_END -->
 
@@ -83,7 +83,7 @@ Recommendations are intended to be based on evidence from the user's own PC and 
 
 The foundation for live Star Citizen session detection and performance telemetry.
 
-Current internal focus:
+Current development focus:
 
 - Star Citizen process detection
 - LIVE / PTU / EPTU environment identification
@@ -111,7 +111,7 @@ Tracks performance over time so users can compare configurations, locations, and
 
 Cosmic Pulse is in **private alpha development** and is being built incrementally against real Star Citizen sessions.
 
-The current internal milestone is:
+The current development milestone is:
 
 ```text
 v0.1.0-alpha.0 — Pulse Core
@@ -156,6 +156,12 @@ It does not intend to:
 The project is being designed around external Windows/system telemetry and user-accessible diagnostic information.
 
 **Local-first:** performance/session data is intended to remain on the user's PC unless a future feature clearly asks the user to export or share diagnostic information.
+
+## Security
+
+Security-sensitive findings should **not** be reported through a public issue.
+
+Please review [`SECURITY.md`](SECURITY.md) for the responsible-reporting process, supported-version guidance, and privacy expectations for security reports.
 
 ## License and distribution
 
