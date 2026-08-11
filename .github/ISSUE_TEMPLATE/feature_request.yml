@@ -1,6 +1,8 @@
 name: QOL / Feature Suggestion
 description: Suggest a usability improvement, diagnostic feature, or new idea for Cosmic Pulse.
 title: "[QOL]: "
+labels:
+  - enhancement
 body:
   - type: markdown
     attributes:
