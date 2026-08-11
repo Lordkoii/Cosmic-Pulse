@@ -1,0 +1,50 @@
+name: Sync release README
+
+on:
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out public repository
+        uses: actions/checkout@v4
+
+      - name: Resolve release metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            jq '.release' "$GITHUB_EVENT_PATH" > release.json
+          else
+            gh api "repos/$GITHUB_REPOSITORY/releases?per_page=20" \
+              --jq '[.[] | select(.draft == false)][0]' > release.json
+          fi
+
+      - name: Update README release blocks
+        run: python .github/scripts/sync_release_readme.py release.json
+
+      - name: Commit README update
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if git diff --quiet -- README.md; then
+            echo "README is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update README for latest Cosmic Pulse release"
+          git push
