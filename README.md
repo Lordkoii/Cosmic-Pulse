@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.1 — FPS Telemetry</code>
+  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.2 — Frame-Time Telemetry</code>
 </p>
 <!-- AUTO_HERO_RELEASE_END -->
 
@@ -91,6 +91,7 @@ Current development focus:
 - process memory monitoring
 - system memory monitoring
 - external PresentMon-based live FPS telemetry
+- rolling PresentMon-based frame-time telemetry
 
 ### PulseCheck — Planned
 
@@ -115,7 +116,7 @@ Cosmic Pulse is in **private alpha development** and is being built incrementall
 The current development milestone is:
 
 ```text
-v0.1.0-alpha.1 — FPS Telemetry
+v0.1.0-alpha.2 — Frame-Time Telemetry
 ```
 
 There is **no public build available yet**. Public downloads will appear here only after a build has been tested and is ready for community evaluation.
