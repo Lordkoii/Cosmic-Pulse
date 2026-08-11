@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/cosmic-pulse-banner.png"
+  <img src="assets/cosmic-pulse-banner.jpg"
        alt="Cosmic Pulse — Star Citizen Performance Intelligence"
        width="100%">
 </p>
