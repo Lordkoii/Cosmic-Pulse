@@ -1,9 +1,8 @@
 <p align="center">
-  <strong>COSMIC PULSE</strong><br>
-  <em>Star Citizen Performance Intelligence</em>
+  <img src="assets/cosmic-pulse-banner.png"
+       alt="Cosmic Pulse — Star Citizen Performance Intelligence"
+       width="100%">
 </p>
-
-<!-- Banner target: assets/cosmic-pulse-banner.png -->
 
 <p align="center">
   <strong>Status:</strong> Private Alpha
