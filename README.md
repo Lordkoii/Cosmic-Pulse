@@ -12,6 +12,7 @@
   <strong>Source:</strong> Private
 </p>
 
+<!-- AUTO_HERO_RELEASE_START -->
 <p align="center">
   <img src="https://img.shields.io/badge/Public_Test_Builds-Coming_Soon-8a62ff?style=for-the-badge" alt="Public test builds coming soon">
 </p>
@@ -19,6 +20,7 @@
 <p align="center">
   <strong>Current internal milestone:</strong> <code>v0.1.0-alpha.0 — Pulse Core</code>
 </p>
+<!-- AUTO_HERO_RELEASE_END -->
 
 <p align="center">
   <a href="https://github.com/Lordkoii/Cosmic-Pulse/issues/new?template=bug_report.yml">
@@ -117,6 +119,7 @@ v0.1.0-alpha.0 — Pulse Core
 
 There is **no public build available yet**. Public downloads will appear here only after a build has been tested and is ready for community evaluation.
 
+<!-- AUTO_RELEASE_START -->
 ## Download
 
 **Public test builds are coming soon.**
@@ -124,6 +127,7 @@ There is **no public build available yet**. Public downloads will appear here on
 When the first tester build is ready, this section will contain the official release link, package name, installation instructions, release notes, and SHA-256 file verification information.
 
 Only download Cosmic Pulse from releases published by **Lordkoii** in this repository.
+<!-- AUTO_RELEASE_END -->
 
 ## Help test Cosmic Pulse
 
