@@ -56,49 +56,56 @@ If not, it is probably outside the core scope.
 - zero-sample acquisition sessions discarded
 - persistence and lifecycle regression coverage
 
-## Current development
-
 ### v0.1.0-alpha.6 — Event Detection
 
-Detect meaningful changes in the recorded timeline without claiming root cause.
-
-Current implementation:
-
-- elevated memory-pressure event after sustained 90%+ RAM/VRAM utilization
-- critical memory-pressure event after sustained 95%+ RAM/VRAM utilization
-- memory-pressure recovery after sustained headroom returns
-- sustained GPU saturation event
-- GPU-saturation recovery
-- sustained performance-degradation event using a pre-event baseline compared with the recent FPS/frame-time window
-- performance recovery toward the pre-event baseline
+- elevated and critical memory-pressure events
+- memory-pressure recovery
+- sustained GPU saturation and recovery
+- sustained performance degradation and recovery
 - event deduplication while a detected condition remains active
 - immediate `performance_event` persistence alongside raw telemetry
 - severity, timestamp, summary, and supporting evidence stored with each event
 - automated regression coverage for event entry, recovery, deduplication, and persistence
 
-The goal of alpha.6 is to establish **when something changed**. It deliberately avoids causal claims such as “memory caused the slowdown” until later milestones can correlate independent evidence.
+Alpha.6 establishes **when something changed** without claiming root cause.
 
-Possible later event signatures, after the current set is validated against real sessions:
-
-- dedicated short-duration frame-time spike / stutter events
-- GPU-utilization collapse events that are meaningful independently of a broader degradation event
-- richer memory-transition staging
-
-## Forensic intelligence sequence
+## Current development
 
 ### v0.1.0-alpha.7 — Incident Forensics
 
-Build the first failure-investigation workflow.
+Build the first end-of-session failure-investigation workflow on top of the validated recorder and event timeline.
 
-Planned goals:
+Current alpha.7 implementation:
 
-- detect that a recorded Star Citizen session ended unexpectedly when the evidence supports that conclusion
-- preserve and summarize the final 60–120 seconds of telemetry
-- correlate recorded Pulse Events immediately before termination
-- correlate available Windows diagnostic events
-- correlate user-accessible Star Citizen log evidence
-- distinguish evidence from inference
-- return Undetermined when a cause cannot be supported responsibly
+- preserve a rolling final 60-second forensic review window
+- capture session termination reason and Windows process exit code when available
+- distinguish normal process exit, abnormal/non-zero exit, process disappearance, recorder interruption, and Cosmic Pulse closing before the game
+- correlate recent Pulse Events with the termination timeline
+- treat recovered warning conditions as historical evidence rather than active pre-exit precursors
+- summarize frame-time, system-memory, GPU, and final PulseCheck evidence from the review window
+- persist an `incident_report` record before `session_end`
+- keep the incident review visible in the app after Star Citizen closes
+- provide a cautious next diagnostic test without claiming an unsupported root cause
+- show live session duration in the status row
+- automated regression coverage for normal exits, abnormal exits with precursors, recovered conditions, the 60-second boundary, and incident persistence
+
+Alpha.7 deliberately distinguishes **correlation from causation**. An event occurring before an abnormal exit is reported as a precursor, not automatically as the crash cause.
+
+Still planned for later incident-forensics passes:
+
+- correlation with relevant Windows diagnostic events
+- correlation with user-accessible Star Citizen log evidence
+- richer crash/driver-reset signatures
+- additional termination evidence when Windows exposes it safely
+- explicit contradictory-evidence handling
+
+Possible later event signatures:
+
+- dedicated short-duration frame-time spike / stutter events
+- GPU-utilization collapse events meaningful independently of a broader degradation event
+- richer memory-transition staging
+
+## Forensic intelligence sequence
 
 ### v0.1.0-alpha.8 — Pulse Report
 
