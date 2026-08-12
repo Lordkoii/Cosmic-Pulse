@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/Lordkoii/Cosmic-Pulse/b2a835ec69525f18e47ab7942474bd3ff53d2486/assets/cosmic-pulse-banner.jpg"
-       alt="Cosmic Pulse — Star Citizen Performance Intelligence"
+       alt="Cosmic Pulse — Star Citizen Performance & Reliability Forensics"
        width="100%">
 </p>
 
@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.6 — Event Detection</code>
+  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.7 — Incident Forensics</code>
 </p>
 <!-- AUTO_HERO_RELEASE_END -->
 
@@ -128,11 +128,11 @@ The local black-box foundation records one append-only telemetry snapshot per se
 
 Records are flushed immediately for crash resilience and currently preserve FPS, frame time, CPU, GPU, process RAM, system RAM, VRAM, and PulseCheck state. Session start/end lifecycle markers and zero-sample acquisition cleanup are covered by regression tests.
 
-### Pulse Events — Alpha.6 in development
+### Pulse Events — Alpha.6 validated
 
-The first timeline-intelligence layer identifies **when a sustained condition changes** without yet claiming root cause.
+The first timeline-intelligence layer identifies **when a sustained condition changes** without claiming root cause.
 
-Current alpha.6 event signatures include:
+Current event signatures include:
 
 - elevated and critical memory pressure
 - memory-pressure recovery
@@ -143,11 +143,25 @@ Current alpha.6 event signatures include:
 
 Detected events are immediately persisted as `performance_event` records alongside the raw telemetry, with severity, timestamp, summary, and supporting measurements. Repeated samples do not continuously duplicate an already-active condition.
 
-Alpha.6 remains intentionally observational. Causal statements such as “memory pressure caused this slowdown” are reserved for later correlation work when the evidence supports them.
+### Incident Forensics — Alpha.7 in development
 
-### Incident Forensics — Planned
+The first end-of-session investigation layer reviews the **final 60 seconds** of recorded evidence when a Star Citizen session ends.
 
-Preserve and analyze the period before an unexpected Star Citizen exit, then correlate the recorded performance timeline with available Windows and Star Citizen diagnostic evidence.
+Current alpha.7 behavior includes:
+
+- session-duration tracking
+- process termination reason and Windows exit-code capture when available
+- normal-exit vs abnormal/non-zero-exit vs process-unavailable handling
+- correlation of recent Pulse Events with the termination timeline
+- recovered warnings excluded from active pre-exit precursor calls
+- final-window frame-time, RAM, GPU, and PulseCheck evidence summaries
+- persistent `incident_report` records written before `session_end`
+- incident review retained visibly after Star Citizen closes
+- a cautious suggested next test without claiming unsupported root cause
+
+Alpha.7 deliberately reports **precursors and correlations**, not automatic crash causes. A memory-pressure event before a non-zero process exit is evidence worth testing, but it is not by itself proof that memory caused the exit.
+
+Windows Event Log correlation and user-accessible Star Citizen log correlation remain planned follow-on work and are not claimed by the current implementation.
 
 ### Pulse Report — Planned
 
@@ -166,10 +180,10 @@ Cosmic Pulse is in **private alpha development** and is being built incrementall
 The current development milestone is:
 
 ```text
-v0.1.0-alpha.6 — Event Detection
+v0.1.0-alpha.7 — Incident Forensics
 ```
 
-The current emphasis is **objective event detection before root-cause correlation**: first establish when a meaningful condition changed, persist the evidence, and prove recovery/deduplication behavior. Incident Forensics will build causal correlation on top of those recorded events later.
+The current emphasis is **responsible end-of-session correlation**: preserve the final evidence window, identify what remained active before termination, distinguish normal and abnormal exit evidence when Windows exposes it, and avoid turning correlation into an unsupported root-cause claim.
 
 There is **no public build available yet**. Public downloads will appear here only after a build has been tested and is ready for community evaluation.
 
