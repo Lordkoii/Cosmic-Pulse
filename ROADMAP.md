@@ -45,38 +45,46 @@ If not, it is probably outside the core scope.
 - Undetermined
 - automated regression coverage for known signatures
 
-## Current development
-
 ### v0.1.0-alpha.5 — Pulse Recorder
 
-Build the local session black box.
+- automatic session recording when Star Citizen is detected
+- one append-only telemetry snapshot per second
+- immediate record flush for crash resilience
+- local session storage under the user's application-data directory
+- FPS, frame time, CPU, GPU, RAM, VRAM, and PulseCheck state preservation
+- session start/end lifecycle markers
+- zero-sample acquisition sessions discarded
+- persistence and lifecycle regression coverage
 
-Goals:
-
-- automatically begin recording when Star Citizen is detected
-- append one telemetry snapshot per second
-- immediately flush records for crash resilience
-- store sessions locally under the user's application-data directory
-- preserve FPS, frame time, CPU, GPU, RAM, VRAM, and PulseCheck state
-- mark session start and session end without pretending a normal process exit is a crash
-- validate the persisted timeline before building higher-level interpretation
-
-## Forensic intelligence sequence
+## Current development
 
 ### v0.1.0-alpha.6 — Event Detection
 
-Detect meaningful changes in the recorded timeline.
+Detect meaningful changes in the recorded timeline without claiming root cause.
 
-Planned examples:
+Current implementation:
 
-- sustained FPS degradation
-- frame-time spikes and sustained frame-time increases
-- system RAM / VRAM pressure transitions
-- sustained GPU saturation
-- GPU utilization collapse during a slowdown
-- recovery after a degradation event
+- elevated memory-pressure event after sustained 90%+ RAM/VRAM utilization
+- critical memory-pressure event after sustained 95%+ RAM/VRAM utilization
+- memory-pressure recovery after sustained headroom returns
+- sustained GPU saturation event
+- GPU-saturation recovery
+- sustained performance-degradation event using a pre-event baseline compared with the recent FPS/frame-time window
+- performance recovery toward the pre-event baseline
+- event deduplication while a detected condition remains active
+- immediate `performance_event` persistence alongside raw telemetry
+- severity, timestamp, summary, and supporting evidence stored with each event
+- automated regression coverage for event entry, recovery, deduplication, and persistence
 
-The goal is to identify **when something changed**, not yet to claim why.
+The goal of alpha.6 is to establish **when something changed**. It deliberately avoids causal claims such as “memory caused the slowdown” until later milestones can correlate independent evidence.
+
+Possible later event signatures, after the current set is validated against real sessions:
+
+- dedicated short-duration frame-time spike / stutter events
+- GPU-utilization collapse events that are meaningful independently of a broader degradation event
+- richer memory-transition staging
+
+## Forensic intelligence sequence
 
 ### v0.1.0-alpha.7 — Incident Forensics
 
@@ -86,6 +94,7 @@ Planned goals:
 
 - detect that a recorded Star Citizen session ended unexpectedly when the evidence supports that conclusion
 - preserve and summarize the final 60–120 seconds of telemetry
+- correlate recorded Pulse Events immediately before termination
 - correlate available Windows diagnostic events
 - correlate user-accessible Star Citizen log evidence
 - distinguish evidence from inference
