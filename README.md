@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.5 — Pulse Recorder</code>
+  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.6 — Event Detection</code>
 </p>
 <!-- AUTO_HERO_RELEASE_END -->
 
@@ -122,17 +122,28 @@ Current conservative classifications:
 
 Each ready result includes a confidence level and supporting evidence. The classifier also has automated regression scenarios so known signatures cannot silently change without failing CI.
 
-### Pulse Recorder — Alpha.5 in development
+### Pulse Recorder — Alpha.5 validated
 
-The local black-box foundation.
+The local black-box foundation records one append-only telemetry snapshot per second while Star Citizen is running.
 
-While Star Citizen is running, Cosmic Pulse records an append-only session timeline with one telemetry snapshot per second. Records are flushed immediately so the timeline remains useful even if Star Citizen later terminates unexpectedly.
+Records are flushed immediately for crash resilience and currently preserve FPS, frame time, CPU, GPU, process RAM, system RAM, VRAM, and PulseCheck state. Session start/end lifecycle markers and zero-sample acquisition cleanup are covered by regression tests.
 
-The session format is being designed to accept richer forensic records later without replacing the underlying timeline format.
+### Pulse Events — Alpha.6 in development
 
-### Event Detection — Planned
+The first timeline-intelligence layer identifies **when a sustained condition changes** without yet claiming root cause.
 
-Automatically identify meaningful changes such as sustained FPS degradation, frame-time spikes, rising memory pressure, GPU saturation, or a utilization collapse that precedes a slowdown.
+Current alpha.6 event signatures include:
+
+- elevated and critical memory pressure
+- memory-pressure recovery
+- sustained GPU saturation
+- GPU-saturation recovery
+- sustained performance degradation using pre-event vs recent FPS/frame-time windows
+- performance recovery toward the pre-event baseline
+
+Detected events are immediately persisted as `performance_event` records alongside the raw telemetry, with severity, timestamp, summary, and supporting measurements. Repeated samples do not continuously duplicate an already-active condition.
+
+Alpha.6 remains intentionally observational. Causal statements such as “memory pressure caused this slowdown” are reserved for later correlation work when the evidence supports them.
 
 ### Incident Forensics — Planned
 
@@ -155,10 +166,10 @@ Cosmic Pulse is in **private alpha development** and is being built incrementall
 The current development milestone is:
 
 ```text
-v0.1.0-alpha.5 — Pulse Recorder
+v0.1.0-alpha.6 — Event Detection
 ```
 
-The current emphasis is **data integrity before interpretation**: first prove the session timeline is reliable and crash-resilient, then build event detection and incident analysis on top of it.
+The current emphasis is **objective event detection before root-cause correlation**: first establish when a meaningful condition changed, persist the evidence, and prove recovery/deduplication behavior. Incident Forensics will build causal correlation on top of those recorded events later.
 
 There is **no public build available yet**. Public downloads will appear here only after a build has been tested and is ready for community evaluation.
 
