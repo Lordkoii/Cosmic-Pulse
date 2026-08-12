@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.4 — PulseCheck</code>
+  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.5 — Pulse Recorder</code>
 </p>
 <!-- AUTO_HERO_RELEASE_END -->
 
@@ -38,52 +38,65 @@
 
 ## About Cosmic Pulse
 
-**Cosmic Pulse is a Windows companion application for Star Citizen designed to help players understand why the game is performing poorly — not just show raw numbers.**
+**Cosmic Pulse is a Windows performance and reliability forensics tool for Star Citizen.**
 
-It is being built to analyze real gameplay telemetry, identify likely system bottlenecks, compare before-and-after changes, and eventually help diagnose stability problems such as crashes, disconnects, and poor frame pacing.
+It is being built to do more than display FPS, CPU, GPU, RAM, and VRAM. Those measurements are the sensors. The product goal is to correlate them over time and help answer four practical questions:
 
-Traditional monitoring tools tell you **what your hardware is doing**. Cosmic Pulse is being built to tell you **what that means for Star Citizen and what you should do about it**.
+1. **What happened?**
+2. **When did it start?**
+3. **What changed immediately beforehand?**
+4. **What should I test next?**
 
-This public repository is the home for **future tester downloads, release notes, bug reports, and performance feedback**. The application source code is maintained separately in a private repository and is **not distributed here**.
+Traditional monitoring tools are excellent at showing what hardware is doing right now. Cosmic Pulse is being built as a local **black box for a Star Citizen session**: record the evidence, detect meaningful changes, preserve the moments before a failure, and produce cautious findings with visible confidence and supporting evidence.
+
+This public repository is the home for **future tester downloads, release notes, bug reports, and performance / diagnosis feedback**. The application source code is maintained separately in a private repository and is **not distributed here**.
+
+## Product focus
+
+Cosmic Pulse is intentionally **not** being designed as an all-purpose Star Citizen companion suite.
+
+The core mission is performance and reliability investigation. General trading tools, cargo/mining calculators, fleet management, navigation databases, gameplay automation, and similar gameplay-companion features are outside that mission unless they directly help explain a performance or stability event.
+
+A feature belongs in Cosmic Pulse when it helps explain **why a Star Citizen session performed badly or failed**.
 
 ## How Cosmic Pulse works
 
 ```text
 Star Citizen session
         │
-        ├── Frame performance
+        ├── FPS / frame time
         ├── CPU / GPU behavior
         ├── RAM / VRAM pressure
         ├── Windows telemetry
-        └── Game / crash diagnostics
+        └── available game / crash diagnostics
                  │
                  ▼
            COSMIC PULSE
-        Analysis & correlation
+          Local black box
+                 │
+        record → correlate → explain
                  │
         ┌────────┼────────┐
         ▼        ▼        ▼
-  Performance  Stability  Optimization
-   analysis    analysis      advice
+ Performance   Incident   Before/After
+   events      forensics    comparison
         └────────┼────────┘
                  ▼
-            PULSE REPORT
+             PULSE REPORT
 ```
 
-The goal is a clear result such as:
+A future finding should read more like this than a generic monitoring dashboard:
 
-> **CPU Limited**  
-> GPU headroom remains available. Reducing resolution is unlikely to significantly improve performance.
+> **Memory Pressure — High Confidence**  
+> System memory crossed 90% before sustained frame-time degradation began. GPU utilization fell during the slowdown, making GPU saturation an unlikely primary cause.
 
-Recommendations are intended to be based on evidence from the user's own PC and gameplay session rather than generic optimization lists.
+Cosmic Pulse should also be comfortable returning **Undetermined** when the available evidence is not strong enough for a responsible conclusion.
 
 ## Core systems
 
-### Pulse Core — In development
+### Pulse Core — Validated foundation
 
-The foundation for live Star Citizen session detection and performance telemetry.
-
-Current development focus:
+The live telemetry layer currently provides:
 
 - Star Citizen process detection
 - LIVE / PTU / EPTU environment identification
@@ -95,31 +108,45 @@ Current development focus:
 - Windows-native GPU utilization telemetry
 - dedicated VRAM usage and GPU identity
 
-### PulseCheck — In development
+### PulseCheck — Alpha.4 validated
 
-The first performance-intelligence layer correlates a rolling telemetry window instead of judging single readings.
+The first performance-intelligence layer correlates a rolling telemetry window rather than judging a single reading.
 
-Alpha.4 currently distinguishes conservative signatures for:
+Current conservative classifications:
 
 - CPU Limited
 - GPU Limited
 - Memory Pressure
 - Possibly Capped / VSync / menu-limited behavior
-- Undetermined when the evidence is not strong enough
+- Undetermined
 
-Each ready result includes a confidence level and supporting evidence. The current CPU classification remains intentionally cautious until richer per-core/thread correlation is added.
+Each ready result includes a confidence level and supporting evidence. The classifier also has automated regression scenarios so known signatures cannot silently change without failing CI.
+
+### Pulse Recorder — Alpha.5 in development
+
+The local black-box foundation.
+
+While Star Citizen is running, Cosmic Pulse records an append-only session timeline with one telemetry snapshot per second. Records are flushed immediately so the timeline remains useful even if Star Citizen later terminates unexpectedly.
+
+The session format is being designed to accept richer forensic records later without replacing the underlying timeline format.
+
+### Event Detection — Planned
+
+Automatically identify meaningful changes such as sustained FPS degradation, frame-time spikes, rising memory pressure, GPU saturation, or a utilization collapse that precedes a slowdown.
+
+### Incident Forensics — Planned
+
+Preserve and analyze the period before an unexpected Star Citizen exit, then correlate the recorded performance timeline with available Windows and Star Citizen diagnostic evidence.
+
+### Pulse Report — Planned
+
+Turn a session or incident into a concise explanation containing the event timeline, probable cause, confidence, evidence, and a recommended next test.
 
 ### PulseCompare — Planned
 
-Compares before-and-after tests to determine whether a graphics, Windows, driver, or hardware change actually improved the experience.
+Compare controlled before-and-after sessions to determine whether a graphics setting, Windows setting, driver change, or hardware change actually improved the experience.
 
-### Reliability — Planned
-
-Correlates available Star Citizen and Windows diagnostic information to help explain crashes, disconnects, driver resets, and other stability problems.
-
-### Session History — Planned
-
-Tracks performance over time so users can compare configurations, locations, and eventually patch-to-patch behavior.
+See [`ROADMAP.md`](ROADMAP.md) for the current development sequence.
 
 ## Current development status
 
@@ -128,8 +155,10 @@ Cosmic Pulse is in **private alpha development** and is being built incrementall
 The current development milestone is:
 
 ```text
-v0.1.0-alpha.4 — PulseCheck
+v0.1.0-alpha.5 — Pulse Recorder
 ```
+
+The current emphasis is **data integrity before interpretation**: first prove the session timeline is reliable and crash-resilient, then build event detection and incident analysis on top of it.
 
 There is **no public build available yet**. Public downloads will appear here only after a build has been tested and is ready for community evaluation.
 
@@ -145,7 +174,7 @@ Only download Cosmic Pulse from releases published by **Lordkoii** in this repos
 
 ## Help test Cosmic Pulse
 
-When public testing begins, real-world feedback will be one of the most important parts of improving diagnostic accuracy.
+When public testing begins, varied real-world hardware and genuine Star Citizen failures will be essential to improving diagnostic accuracy.
 
 **Found an application problem?** Use the [Bug Report](https://github.com/Lordkoii/Cosmic-Pulse/issues/new?template=bug_report.yml) form.
 
@@ -169,7 +198,7 @@ It does not intend to:
 
 The project is being designed around external Windows/system telemetry and user-accessible diagnostic information.
 
-**Local-first:** performance/session data is intended to remain on the user's PC unless a future feature clearly asks the user to export or share diagnostic information.
+**Local-first:** session and diagnostic data is intended to remain on the user's PC unless a feature clearly asks the user to export or share it.
 
 ## Security
 
