@@ -135,22 +135,30 @@ The goal is to make statements such as **“GPU contention detected”** more de
 
 ### Near-term forensic context — Environment Fingerprinting
 
-Cosmic Pulse should know what the local Star Citizen environment looked like when a session ran or failed. This remains **read-only observation**: Cosmic Pulse does not modify `USER.cfg`, localization files, `Data.p4k`, or other Star Citizen files.
+Cosmic Pulse now records a read-only snapshot of the local Star Citizen environment when a real Star Citizen session begins. Cosmic Pulse does **not** modify `USER.cfg`, localization files, `Data.p4k`, or other Star Citizen files.
 
-Planned work:
+First-pass implementation:
 
-- record the active Star Citizen build/channel and executable metadata
-- record Windows build, GPU/driver identity, installed RAM, and other stable host context useful for cross-session comparison
-- record Cosmic Pulse and PresentMon versions used for the session
-- detect whether a custom `USER.cfg` is present and preserve safe metadata such as modification time and a content fingerprint where appropriate
-- detect custom localization paths such as `Data/Localization/<language>/global.ini`
-- record localization language, file timestamps, and fingerprints without rewriting or merging the files
-- record `Data.p4k` size/timestamp metadata without modifying or unpacking it as part of normal monitoring
-- detect environment changes between known-good and degraded/failed sessions
-- surface modification/environment differences as **context**, not proof of causation
-- preserve environment fingerprints with the local session record so PulseCompare can correlate changes across sessions later
+- schema-v3 sessions include a structured `environment_fingerprint` record immediately after `session_start`
+- record Star Citizen executable name, file/product version when available, size, and modification time
+- record Windows description/build, CPU name, logical-processor count, and installed physical memory
+- record installed Windows display-driver metadata and the PresentMon version used by Cosmic Pulse
+- detect `USER.cfg`, parse the configured `g_language` value, and preserve only relative path, size, modification time, and SHA-256 fingerprint
+- detect `Data/Localization/<language>/global.ini` files, identify the localization selected by `g_language`, and preserve only relative path, size, modification time, and SHA-256 fingerprint
+- record `Data.p4k` size and modification time without hashing or unpacking the file
+- use the same query-limited Windows executable-path fallback already proven by Pulse Core when `Process.MainModule` is unavailable
+- store no `USER.cfg` or localization file contents and no absolute Star Citizen installation paths in the environment record
+- automated regression coverage verifies read-only capture, localization selection, hashing, schema-v3 persistence, and privacy-safe output
 
-Examples of intended findings include **“the GPU driver changed since the last stable session,” “custom localization predates the current game build,”** or **“USER.cfg changed between the stable and failed runs.”** Cosmic Pulse should report those observations without claiming they caused a failure unless independent evidence supports that conclusion.
+Still planned:
+
+- compare fingerprints between known-good and degraded/failed sessions
+- surface meaningful environment changes in Incident Forensics and Pulse Report
+- highlight changes such as driver updates, `USER.cfg` edits, localization replacement, or a patched `Data.p4k` as context rather than proof of causation
+- preserve environment-difference summaries for PulseCompare
+- refine active-GPU/driver association where Windows exposes sufficiently reliable metadata
+
+Examples of intended future findings include **“the GPU driver changed since the last stable session,” “custom localization predates the current game build,”** or **“USER.cfg changed between the stable and failed runs.”** Cosmic Pulse should report those observations without claiming they caused a failure unless independent evidence supports that conclusion.
 
 ## Forensic intelligence sequence
 
