@@ -133,6 +133,25 @@ Planned work:
 
 The goal is to make statements such as **“GPU contention detected”** more defensible than a generic “GPU bottleneck” call when another game, browser video, stream, or GPU-accelerated application is also active.
 
+### Near-term forensic context — Environment Fingerprinting
+
+Cosmic Pulse should know what the local Star Citizen environment looked like when a session ran or failed. This remains **read-only observation**: Cosmic Pulse does not modify `USER.cfg`, localization files, `Data.p4k`, or other Star Citizen files.
+
+Planned work:
+
+- record the active Star Citizen build/channel and executable metadata
+- record Windows build, GPU/driver identity, installed RAM, and other stable host context useful for cross-session comparison
+- record Cosmic Pulse and PresentMon versions used for the session
+- detect whether a custom `USER.cfg` is present and preserve safe metadata such as modification time and a content fingerprint where appropriate
+- detect custom localization paths such as `Data/Localization/<language>/global.ini`
+- record localization language, file timestamps, and fingerprints without rewriting or merging the files
+- record `Data.p4k` size/timestamp metadata without modifying or unpacking it as part of normal monitoring
+- detect environment changes between known-good and degraded/failed sessions
+- surface modification/environment differences as **context**, not proof of causation
+- preserve environment fingerprints with the local session record so PulseCompare can correlate changes across sessions later
+
+Examples of intended findings include **“the GPU driver changed since the last stable session,” “custom localization predates the current game build,”** or **“USER.cfg changed between the stable and failed runs.”** Cosmic Pulse should report those observations without claiming they caused a failure unless independent evidence supports that conclusion.
+
 ## Forensic intelligence sequence
 
 ### v0.1.0-alpha.8 — Pulse Report
@@ -212,5 +231,6 @@ Cosmic Pulse is not currently intended to become:
 - a general Star Citizen wiki client
 - a gameplay automation tool
 - an injected overlay
+- a localization replacement or game-file modification tool
 
 These boundaries keep the project focused on a specific job: **performance and reliability forensics for Star Citizen**.
