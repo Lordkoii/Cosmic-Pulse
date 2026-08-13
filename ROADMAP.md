@@ -142,7 +142,7 @@ Validated implementation:
 - automated regression coverage for PID/LUID parsing, schema-v5 workload persistence, and rolling workload-summary behavior
 - real-machine validation completed with both a Star Citizen-only baseline and a deliberate second-game GPU workload; the second application could peak substantially above Star Citizen while Star Citizen remained independently attributed
 
-Foreground / Focus Awareness now adds another read-only layer of context around those workload changes:
+Foreground / Focus Awareness adds another read-only layer of context around those workload changes:
 
 - use the Windows foreground-window owner PID to determine whether Star Citizen is foreground or background
 - display `Foreground` or `Background: <process>` beside the tracked Star Citizen PID while the session is live
@@ -152,10 +152,10 @@ Foreground / Focus Awareness now adds another read-only layer of context around 
 - summarize focus state across the final 60-second Incident Forensics window without changing the exit classification by itself
 - keep focus state contextual: being backgrounded or having another application foreground does not prove that it caused a performance change
 - automated regression coverage verifies event context, final-window forensic context, and privacy-light persistence without window titles
+- real-machine validation completed on a single-monitor setup: persisted telemetry showed consecutive `StarCitizen` foreground samples followed by background transitions to Cosmic Pulse, PowerShell, and Explorer exactly as focus changed
 
 Still planned:
 
-- real-machine focus validation while switching between Star Citizen and a second application
 - refine active-adapter naming and driver association on multi-GPU systems
 - persist a compact workload-summary object directly with future report-layer output rather than relying only on raw schema-v5 telemetry
 - summarize workload and focus context in Pulse Report and PulseCompare
