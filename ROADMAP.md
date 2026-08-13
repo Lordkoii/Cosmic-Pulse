@@ -87,23 +87,44 @@ Current alpha.7 implementation:
 - keep the incident review visible in the app after Star Citizen closes
 - provide a cautious next diagnostic test without claiming an unsupported root cause
 - show live session duration in the status row
-- automated regression coverage for normal exits, abnormal exits with precursors, recovered conditions, the 60-second boundary, and incident persistence
+- correlate the current Star Citizen `Game.log` when it contains recognized crash evidence
+- recognize documented Star Citizen crash signatures such as access violation, CryEngine watchdog/fatal, out-of-system-memory, and GPU-crash codes
+- correlate Windows Application Error, Windows Error Reporting, and Application Hang records near termination
+- scope Windows evidence to the tracked Star Citizen process ID when the event record exposes one
+- preserve external forensic evidence structurally in schema-v2 `incident_report` records
+- distinguish an abnormal exit with independent diagnostic evidence from one supported only by telemetry precursors
+- automated regression coverage for normal exits, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, and external-evidence classification
 
-Alpha.7 deliberately distinguishes **correlation from causation**. An event occurring before an abnormal exit is reported as a precursor, not automatically as the crash cause.
+Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause.
 
 Still planned for later incident-forensics passes:
 
-- correlation with relevant Windows diagnostic events
-- correlation with user-accessible Star Citizen log evidence
-- richer crash/driver-reset signatures
-- additional termination evidence when Windows exposes it safely
+- richer parsing of Star Citizen crash-handler artifacts such as payload and GPU diagnostic files
+- Windows driver-reset and additional System-log signatures
+- delayed/late Windows-event enrichment when diagnostic records are written after process termination
 - explicit contradictory-evidence handling
+- recurring incident-signature comparison across sessions
+- richer crash/driver-reset signatures as real-world evidence is validated
 
 Possible later event signatures:
 
 - dedicated short-duration frame-time spike / stutter events
 - GPU-utilization collapse events meaningful independently of a broader degradation event
 - richer memory-transition staging
+
+### Near-term telemetry intelligence — Concurrent Workload Awareness
+
+Current GPU utilization and dedicated-VRAM telemetry describe the adapter as a whole. That is useful system evidence, but a saturated GPU is not automatically proof that Star Citizen alone created the load.
+
+Planned work:
+
+- detect significant concurrent GPU workloads while Star Citizen is running
+- distinguish system-wide GPU pressure from Star Citizen-specific frame-throughput evidence
+- avoid attributing total adapter saturation solely to Star Citizen when other applications are active
+- surface concurrent-workload evidence in PulseCheck and Incident Forensics
+- investigate safe per-process / per-adapter attribution using external Windows telemetry where accuracy is sufficient
+
+The goal is to make statements such as **“GPU contention detected”** more defensible than a generic “GPU bottleneck” call when another game, browser video, stream, or GPU-accelerated application is also active.
 
 ## Forensic intelligence sequence
 
