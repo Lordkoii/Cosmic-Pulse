@@ -94,21 +94,27 @@ Current alpha.7 implementation:
 - correlate RSI Launcher `log.log` abnormal-exit records written during the tracked Star Citizen session
 - checkpoint the Launcher log when a session begins so stale entries from earlier runs are not reused
 - correlate Windows Application Error, Windows Error Reporting, and Application Hang records near termination
-- scope Windows evidence to the tracked Star Citizen process ID when the event record exposes one
+- scope Windows application evidence to the tracked Star Citizen process ID when the event record exposes one
+- checkpoint `%LOCALAPPDATA%\Star Citizen` crash-handler artifacts when a session begins so stale crash files from earlier runs are not reused
+- detect a newly generated or updated crash-handler `payload.zip`, loose `gpu_error.log`, or crash-handler `game.log` during the tracked session
+- inspect crash-handler payload archive metadata and entry names read-only without extracting the archive or modifying crash files
+- treat fresh Star Citizen crash-handler artifacts as independent Star Citizen-specific crash evidence
+- correlate Windows System `Display` Event 4101 as display-driver timeout/recovery context near session termination
+- preserve Windows TDR evidence as system-wide context without allowing it by itself to override a clean Star Citizen exit
 - preserve external forensic evidence structurally in `incident_report` records
 - distinguish an abnormal exit with independent diagnostic evidence from one supported only by telemetry precursors
-- hold the recorder open for a 4-second post-exit evidence window so late RSI Launcher, `Game.log`, or Windows diagnostic records can be included before the incident is finalized
+- hold the recorder open for a 4-second post-exit evidence window so late RSI Launcher, `Game.log`, crash-handler, or Windows diagnostic records can be included before the incident is finalized
 - preserve the exact process-termination timestamp while the late-evidence window is open
 - merge immediate and delayed forensic evidence without duplicating the same diagnostic signature
 - show a non-blocking `COLLECTING EXIT EVIDENCE` state while the post-exit evidence window is active
-- automated regression coverage for normal exits, documented crash codes, unknown non-zero exits, Launcher abnormal-exit evidence, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, external-evidence classification, and late-evidence enrichment
+- automated regression coverage for normal exits, documented crash codes, unknown non-zero exits, Launcher abnormal-exit evidence, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, external-evidence classification, late-evidence enrichment, crash-handler checkpointing, fresh payload detection, and TDR context handling
 
-Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause. A non-zero process code that is not a documented RSI crash code is also treated as unresolved unless another evidence source corroborates it.
+Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause. A non-zero process code that is not a documented RSI crash code is also treated as unresolved unless another Star Citizen-specific evidence source corroborates it. Windows display-driver recovery is currently retained as context only until real-world sessions establish how reliably it should influence classification.
 
 Still planned for later incident-forensics passes:
 
-- richer parsing of Star Citizen crash-handler artifacts such as payload and GPU diagnostic files
-- Windows driver-reset and additional System-log signatures
+- deeper parsing of crash-handler payload/GPU diagnostic contents after real-world artifacts are validated
+- additional Windows System-log failure signatures beyond Display Event 4101
 - explicit contradictory-evidence handling
 - recurring incident-signature comparison across sessions
 - richer crash/driver-reset signatures as real-world evidence is validated
