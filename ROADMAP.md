@@ -121,17 +121,31 @@ Possible later event signatures:
 
 ### Near-term telemetry intelligence — Concurrent Workload Awareness
 
-Current GPU utilization and dedicated-VRAM telemetry describe the adapter as a whole. That is useful system evidence, but a saturated GPU is not automatically proof that Star Citizen alone created the load.
+Adapter-wide GPU telemetry is useful system evidence, but it does not by itself prove that Star Citizen created all observed GPU load. Cosmic Pulse now has a first read-only attribution layer that separates Star Citizen GPU activity from broader activity when Windows exposes reliable per-process GPU-engine counters.
 
-Planned work:
+First-pass implementation:
 
-- detect significant concurrent GPU workloads while Star Citizen is running
-- distinguish system-wide GPU pressure from Star Citizen-specific frame-throughput evidence
-- avoid attributing total adapter saturation solely to Star Citizen when other applications are active
-- surface concurrent-workload evidence in PulseCheck and Incident Forensics
-- investigate safe per-process / per-adapter attribution using external Windows telemetry where accuracy is sufficient
+- enumerate Windows `GPU Engine` performance-counter instances and parse their process IDs and adapter LUIDs
+- identify the GPU adapter LUIDs actively used by the tracked Star Citizen process
+- calculate Star Citizen utilization from the busiest GPU engine attributed to that process
+- preserve adapter-wide busiest-engine activity separately from Star Citizen-specific activity
+- identify the strongest other non-system process using the same Star Citizen GPU adapter when process metadata remains available
+- mark significant concurrent workload context when another application reaches the conservative first-pass threshold of 20% GPU-engine activity
+- feed Star Citizen-specific GPU utilization into PulseCheck and Pulse Events when attribution is available, falling back to the existing adapter-wide signal when it is not
+- avoid deriving a fake `adapter - Star Citizen` utilization value because separate GPU engines can be busy independently
+- report concurrent workload as context rather than automatically declaring GPU contention or root cause
+- persist Star Citizen GPU, adapter GPU, strongest-other-process GPU, process name, concurrent-workload state, and adapter ID in schema-v4 telemetry records
+- automated regression coverage for PID/LUID parsing and schema-v4 workload persistence
 
-The goal is to make statements such as **“GPU contention detected”** more defensible than a generic “GPU bottleneck” call when another game, browser video, stream, or GPU-accelerated application is also active.
+Still planned:
+
+- real-machine validation across a Star Citizen-only baseline and a deliberate concurrent GPU workload
+- surface the Star Citizen / adapter / other-workload split directly in the main UI without cluttering the telemetry shell
+- refine active-adapter naming and driver association on multi-GPU systems
+- summarize meaningful concurrent-workload context in Incident Forensics and Pulse Report
+- validate thresholds against real sessions before using concurrent workload to alter diagnostic confidence
+
+The intent is to make GPU findings more defensible: Cosmic Pulse can observe another GPU workload without assuming that the workloads are competing for the same engine or that the other application caused a Star Citizen performance change.
 
 ### Near-term forensic context — Environment Fingerprinting
 
@@ -139,7 +153,7 @@ Cosmic Pulse now records a read-only snapshot of the local Star Citizen environm
 
 First-pass implementation:
 
-- schema-v3 sessions include a structured `environment_fingerprint` record immediately after `session_start`
+- schema-v4 sessions include a structured `environment_fingerprint` record immediately after `session_start`
 - record Star Citizen executable name, file/product version when available, size, and modification time
 - record Windows description/build, CPU name, logical-processor count, and installed physical memory
 - record installed Windows display-driver metadata and the PresentMon version used by Cosmic Pulse
@@ -148,7 +162,7 @@ First-pass implementation:
 - record `Data.p4k` size and modification time without hashing or unpacking the file
 - use the same query-limited Windows executable-path fallback already proven by Pulse Core when `Process.MainModule` is unavailable
 - store no `USER.cfg` or localization file contents and no absolute Star Citizen installation paths in the environment record
-- automated regression coverage verifies read-only capture, localization selection, hashing, schema-v3 persistence, and privacy-safe output
+- automated regression coverage verifies read-only capture, localization selection, hashing, schema-v4 persistence, and privacy-safe output
 
 Still planned:
 
