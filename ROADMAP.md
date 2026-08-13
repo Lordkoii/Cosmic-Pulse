@@ -121,9 +121,9 @@ Possible later event signatures:
 
 ### Near-term telemetry intelligence — Concurrent Workload Awareness
 
-Adapter-wide GPU telemetry is useful system evidence, but it does not by itself prove that Star Citizen created all observed GPU load. Cosmic Pulse now has a first read-only attribution layer that separates Star Citizen GPU activity from broader activity when Windows exposes reliable per-process GPU-engine counters.
+Adapter-wide GPU telemetry is useful system evidence, but it does not by itself prove that Star Citizen created all observed GPU load. Cosmic Pulse now has a read-only attribution layer that separates Star Citizen GPU activity from broader activity when Windows exposes reliable per-process GPU-engine counters.
 
-First-pass implementation:
+Validated first-pass implementation:
 
 - enumerate Windows `GPU Engine` performance-counter instances and parse their process IDs and adapter LUIDs
 - identify the GPU adapter LUIDs actively used by the tracked Star Citizen process
@@ -132,18 +132,22 @@ First-pass implementation:
 - identify the strongest other non-system process using the same Star Citizen GPU adapter when process metadata remains available
 - mark significant concurrent workload context when another application reaches the conservative first-pass threshold of 20% GPU-engine activity
 - feed Star Citizen-specific GPU utilization into PulseCheck and Pulse Events when attribution is available, falling back to the existing adapter-wide signal when it is not
+- preserve the latest Star Citizen attribution through short Windows counter-refresh gaps instead of briefly feeding total adapter load into PulseCheck
 - avoid deriving a fake `adapter - Star Citizen` utilization value because separate GPU engines can be busy independently
 - report concurrent workload as context rather than automatically declaring GPU contention or root cause
 - persist Star Citizen GPU, adapter GPU, strongest-other-process GPU, process name, concurrent-workload state, and adapter ID in schema-v4 telemetry records
-- automated regression coverage for PID/LUID parsing and schema-v4 workload persistence
+- preserve a rolling 60-second GPU-attribution history for post-session context
+- surface the Star Citizen / adapter / other-workload split directly in the existing GPU telemetry card without redesigning the shell
+- append meaningful concurrent-workload context to the visible Incident Forensics review while explicitly stating that the observation does not establish contention
+- automated regression coverage for PID/LUID parsing, schema-v4 workload persistence, and rolling workload-summary behavior
+- real-machine validation completed with both a Star Citizen-only baseline and a deliberate second-game GPU workload; the second application could peak substantially above Star Citizen while Star Citizen remained independently attributed
 
 Still planned:
 
-- real-machine validation across a Star Citizen-only baseline and a deliberate concurrent GPU workload
-- surface the Star Citizen / adapter / other-workload split directly in the main UI without cluttering the telemetry shell
 - refine active-adapter naming and driver association on multi-GPU systems
-- summarize meaningful concurrent-workload context in Incident Forensics and Pulse Report
-- validate thresholds against real sessions before using concurrent workload to alter diagnostic confidence
+- persist a compact workload-summary object directly with future report-layer output rather than relying only on raw schema-v4 telemetry
+- summarize workload context in Pulse Report and PulseCompare
+- validate the 20% significance threshold across more real sessions before allowing concurrent workload to alter diagnostic confidence
 
 The intent is to make GPU findings more defensible: Cosmic Pulse can observe another GPU workload without assuming that the workloads are competing for the same engine or that the other application caused a Star Citizen performance change.
 
