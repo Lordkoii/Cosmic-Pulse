@@ -79,7 +79,9 @@ Current alpha.7 implementation:
 
 - preserve a rolling final 60-second forensic review window
 - capture session termination reason and Windows process exit code when available
-- distinguish normal process exit, abnormal/non-zero exit, process disappearance, recorder interruption, and Cosmic Pulse closing before the game
+- distinguish normal exits, evidence-backed abnormal exits, process disappearance, recorder interruption, and Cosmic Pulse closing before the game
+- avoid treating an unknown non-zero process exit code as a crash by itself
+- keep unknown non-zero codes in `SESSION END REVIEW` unless corroborating crash evidence is available
 - correlate recent Pulse Events with the termination timeline
 - treat recovered warning conditions as historical evidence rather than active pre-exit precursors
 - summarize frame-time, system-memory, GPU, and final PulseCheck evidence from the review window
@@ -89,13 +91,15 @@ Current alpha.7 implementation:
 - show live session duration in the status row
 - correlate the current Star Citizen `Game.log` when it contains recognized crash evidence
 - recognize documented Star Citizen crash signatures such as access violation, CryEngine watchdog/fatal, out-of-system-memory, and GPU-crash codes
+- correlate RSI Launcher `log.log` abnormal-exit records written during the tracked Star Citizen session
+- checkpoint the Launcher log when a session begins so stale entries from earlier runs are not reused
 - correlate Windows Application Error, Windows Error Reporting, and Application Hang records near termination
 - scope Windows evidence to the tracked Star Citizen process ID when the event record exposes one
 - preserve external forensic evidence structurally in schema-v2 `incident_report` records
 - distinguish an abnormal exit with independent diagnostic evidence from one supported only by telemetry precursors
-- automated regression coverage for normal exits, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, and external-evidence classification
+- automated regression coverage for normal exits, documented crash codes, unknown non-zero exits, Launcher abnormal-exit evidence, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, and external-evidence classification
 
-Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause.
+Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause. A non-zero process code that is not a documented RSI crash code is also treated as unresolved unless another evidence source corroborates it.
 
 Still planned for later incident-forensics passes:
 
