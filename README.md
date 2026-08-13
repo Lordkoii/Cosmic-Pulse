@@ -158,10 +158,15 @@ Current alpha.7 behavior includes:
 - persistent `incident_report` records written before `session_end`
 - incident review retained visibly after Star Citizen closes
 - a cautious suggested next test without claiming unsupported root cause
+- correlation of the current user-accessible Star Citizen `Game.log`
+- recognition of documented Star Citizen crash signatures including access violation, CryEngine watchdog/fatal, out-of-system-memory, and GPU-crash codes
+- correlation of nearby Windows Application Error, Windows Error Reporting, and Application Hang records
+- process-ID scoping for Windows evidence when the event exposes a PID
+- structured external evidence preserved in schema-v2 incident records
 
-Alpha.7 deliberately reports **precursors and correlations**, not automatic crash causes. A memory-pressure event before a non-zero process exit is evidence worth testing, but it is not by itself proof that memory caused the exit.
+Alpha.7 deliberately reports **precursors and correlations**, not automatic crash causes. A crash signature or performance event near a non-zero process exit is evidence worth preserving and testing, but it is not automatically treated as proof of the underlying root cause.
 
-Windows Event Log correlation and user-accessible Star Citizen log correlation remain planned follow-on work and are not claimed by the current implementation.
+The next forensic refinements include richer crash-handler artifacts, driver-reset/System-log evidence, delayed Windows-event enrichment, and contradictory-evidence handling. Concurrent-workload awareness is also planned so system-wide GPU saturation is not incorrectly attributed solely to Star Citizen when other GPU-intensive applications are active.
 
 ### Pulse Report — Planned
 
@@ -183,7 +188,7 @@ The current development milestone is:
 v0.1.0-alpha.7 — Incident Forensics
 ```
 
-The current emphasis is **responsible end-of-session correlation**: preserve the final evidence window, identify what remained active before termination, distinguish normal and abnormal exit evidence when Windows exposes it, and avoid turning correlation into an unsupported root-cause claim.
+The current emphasis is **responsible multi-source incident correlation**: preserve the final telemetry window, distinguish normal and abnormal termination, correlate available Star Citizen and Windows diagnostic evidence, and keep observed evidence separate from unsupported root-cause claims.
 
 There is **no public build available yet**. Public downloads will appear here only after a build has been tested and is ready for community evaluation.
 
