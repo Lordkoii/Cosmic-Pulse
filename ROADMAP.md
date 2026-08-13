@@ -95,7 +95,7 @@ Current alpha.7 implementation:
 - checkpoint the Launcher log when a session begins so stale entries from earlier runs are not reused
 - correlate Windows Application Error, Windows Error Reporting, and Application Hang records near termination
 - scope Windows evidence to the tracked Star Citizen process ID when the event record exposes one
-- preserve external forensic evidence structurally in schema-v2 `incident_report` records
+- preserve external forensic evidence structurally in `incident_report` records
 - distinguish an abnormal exit with independent diagnostic evidence from one supported only by telemetry precursors
 - hold the recorder open for a 4-second post-exit evidence window so late RSI Launcher, `Game.log`, or Windows diagnostic records can be included before the incident is finalized
 - preserve the exact process-termination timestamp while the late-evidence window is open
