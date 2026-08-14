@@ -218,16 +218,6 @@ When public testing begins, varied real-world hardware and genuine Star Citizen 
 
 Diagnostic information should be reviewed before posting publicly. Do not include account credentials, authentication tokens, personally identifying information, or unrelated private logs.
 
-## ❤️ Support Cosmic Relay & Cosmic Pulse
-
-Cosmic Relay and Cosmic Pulse are independently developed as part of the **Cosmic Utilities** family—free community tools built for Star Citizen players.
-
-If either project is useful to you and you would like to support continued development, contributions help cover **code signing, testing, release infrastructure, and future improvements across both applications**.
-
-**[Support Cosmic Utilities on Ko-fi](https://ko-fi.com/cosmicutilities)**
-
-Support is completely optional—testing builds, reporting bugs, and sharing feedback are just as valuable.
-
 ## Safety & privacy
 
 Cosmic Pulse is designed as an **external companion application**.
