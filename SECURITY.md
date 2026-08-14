@@ -4,11 +4,11 @@ Cosmic Pulse is a proprietary Windows application currently in private alpha dev
 
 ## Reporting a security issue
 
-Please **do not open a public GitHub issue** for a vulnerability, exploit, credential exposure, unsafe update behavior, or other security-sensitive finding.
+Please **do not open a public GitHub issue containing vulnerability details**, exploit steps, credentials, tokens, proof-of-concept code, or other sensitive technical information.
 
 If GitHub's **Private vulnerability reporting** option is available on this repository, use that channel so the report and technical details remain private.
 
-If private vulnerability reporting is not available, contact **Lordkoii** through the GitHub profile associated with this repository and avoid posting exploit details publicly until a private reporting channel is established.
+If private vulnerability reporting is not available, open a minimal public issue titled **[Security] Request private contact** without including sensitive technical details. A private reporting channel can then be arranged.
 
 When reporting a security issue, include only the information necessary to reproduce and understand the problem:
 
@@ -26,7 +26,7 @@ Security reports may include issues involving:
 
 - official Cosmic Pulse binaries or release packages
 - update or release-distribution behavior
-- local diagnostic/session data handling
+- local diagnostic or session-data handling
 - unsafe file permissions or storage behavior
 - accidental secret, token, or credential exposure
 - code execution or privilege-escalation behavior attributable to Cosmic Pulse
@@ -48,4 +48,4 @@ Please allow reasonable time to investigate and prepare a fix before publicly di
 
 Do not include account credentials, authentication tokens, private keys, personally identifying information, unrelated logs, or other sensitive data in a report.
 
-Cosmic Pulse is designed around a local-first model. Performance and diagnostic information is intended to remain on the user's PC unless the user explicitly exports or shares it.
+Cosmic Pulse is designed around a local-first model. Performance and diagnostic information is intended to remain on the user's PC unless the user explicitly exports or shares it. Review and remove information that is not necessary for the security report before sharing diagnostics.
