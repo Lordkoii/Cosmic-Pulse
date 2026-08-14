@@ -32,6 +32,10 @@
   <a href="https://github.com/Lordkoii/Cosmic-Pulse/issues/new?template=performance_feedback.yml">
     <img src="https://img.shields.io/badge/Performance-Feedback-2ecc71?style=flat-square&logo=github" alt="Share Cosmic Pulse performance feedback">
   </a>
+  <a href="https://ko-fi.com/cosmicutilities">
+    <img src="https://img.shields.io/badge/Support-Cosmic_Utilities-ff5e5b?style=flat-square&logo=kofi&logoColor=white"
+         alt="Support Cosmic Utilities on Ko-fi">
+  </a>
 </p>
 
 ---
@@ -213,6 +217,16 @@ When public testing begins, varied real-world hardware and genuine Star Citizen 
 **Think a performance diagnosis is wrong or incomplete?** Use the [Performance / Diagnosis Feedback](https://github.com/Lordkoii/Cosmic-Pulse/issues/new?template=performance_feedback.yml) form and include your hardware, resolution, Star Citizen environment, gameplay scenario, and the diagnosis Cosmic Pulse produced.
 
 Diagnostic information should be reviewed before posting publicly. Do not include account credentials, authentication tokens, personally identifying information, or unrelated private logs.
+
+## ❤️ Support Cosmic Relay & Cosmic Pulse
+
+Cosmic Relay and Cosmic Pulse are independently developed as part of the **Cosmic Utilities** family—free community tools built for Star Citizen players.
+
+If either project is useful to you and you would like to support continued development, contributions help cover **code signing, testing, release infrastructure, and future improvements across both applications**.
+
+**[Support Cosmic Utilities on Ko-fi](https://ko-fi.com/cosmicutilities)**
+
+Support is completely optional—testing builds, reporting bugs, and sharing feedback are just as valuable.
 
 ## Safety & privacy
 
