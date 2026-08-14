@@ -101,6 +101,7 @@ Current alpha.7 implementation:
 - treat fresh Star Citizen crash-handler artifacts as independent Star Citizen-specific crash evidence
 - correlate Windows System `Display` Event 4101 as display-driver timeout/recovery context near session termination
 - preserve Windows TDR evidence as system-wide context without allowing it by itself to override a clean Star Citizen exit
+- real-machine clean-exit validation confirmed the added crash-handler/TDR collectors do not introduce false crash evidence into a normal exit-code `0` session
 - preserve external forensic evidence structurally in `incident_report` records
 - distinguish an abnormal exit with independent diagnostic evidence from one supported only by telemetry precursors
 - hold the recorder open for a 4-second post-exit evidence window so late RSI Launcher, `Game.log`, crash-handler, or Windows diagnostic records can be included before the incident is finalized
