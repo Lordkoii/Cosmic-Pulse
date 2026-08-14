@@ -82,6 +82,11 @@ Current alpha.7 implementation:
 - distinguish normal exits, evidence-backed abnormal exits, process disappearance, recorder interruption, and Cosmic Pulse closing before the game
 - avoid treating an unknown non-zero process exit code as a crash by itself
 - keep unknown non-zero codes in `SESSION END REVIEW` unless corroborating crash evidence is available
+- detect explicit contradictory termination evidence instead of forcing one source to win
+- classify exit code `0` plus independent Star Citizen/Windows failure evidence as `CONFLICTING TERMINATION EVIDENCE` with Medium confidence
+- preserve a visible contradiction statement identifying the clean process exit and the independent failure-evidence source(s)
+- provide a repeat-test recommendation for contradictory cases rather than silently preferring the exit code or diagnostic record
+- keep context-only evidence such as Windows Display Event 4101/TDR from triggering the contradictory state by itself
 - correlate recent Pulse Events with the termination timeline
 - treat recovered warning conditions as historical evidence rather than active pre-exit precursors
 - summarize frame-time, system-memory, GPU, and final PulseCheck evidence from the review window
@@ -108,15 +113,14 @@ Current alpha.7 implementation:
 - preserve the exact process-termination timestamp while the late-evidence window is open
 - merge immediate and delayed forensic evidence without duplicating the same diagnostic signature
 - show a non-blocking `COLLECTING EXIT EVIDENCE` state while the post-exit evidence window is active
-- automated regression coverage for normal exits, documented crash codes, unknown non-zero exits, Launcher abnormal-exit evidence, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, external-evidence classification, late-evidence enrichment, crash-handler checkpointing, fresh payload detection, and TDR context handling
+- automated regression coverage for normal exits, documented crash codes, unknown non-zero exits, Launcher abnormal-exit evidence, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, external-evidence classification, late-evidence enrichment, crash-handler checkpointing, fresh payload detection, TDR context handling, and contradictory-evidence classification
 
-Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause. A non-zero process code that is not a documented RSI crash code is also treated as unresolved unless another Star Citizen-specific evidence source corroborates it. Windows display-driver recovery is currently retained as context only until real-world sessions establish how reliably it should influence classification.
+Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause. A non-zero process code that is not a documented RSI crash code is also treated as unresolved unless another Star Citizen-specific evidence source corroborates it. A clean exit code that conflicts with independent failure evidence is now reported explicitly as unresolved contradictory evidence rather than being forced into either the normal or abnormal bucket. Windows display-driver recovery is currently retained as context only until real-world sessions establish how reliably it should influence classification.
 
 Still planned for later incident-forensics passes:
 
 - deeper parsing of crash-handler payload/GPU diagnostic contents after real-world artifacts are validated
 - additional Windows System-log failure signatures beyond Display Event 4101
-- explicit contradictory-evidence handling
 - recurring incident-signature comparison across sessions
 - richer crash/driver-reset signatures as real-world evidence is validated
 
