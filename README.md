@@ -246,9 +246,13 @@ Cosmic Pulse is **proprietary software**. It is not open source.
 
 Copyright © 2026 **Lordkoii**. All rights reserved.
 
-Future public builds are intended for personal, non-commercial use under the terms in this repository's `LICENSE` file. Redistribution, resale, repackaging, rebranding, or claiming Cosmic Pulse as your own work is not permitted.
+Future official compiled releases may be downloaded, installed, and used for personal, non-commercial evaluation and personal use under the terms in [`LICENSE`](LICENSE).
 
-The private source repository is not licensed for public reuse or redistribution.
+The application source code is maintained privately and is not licensed for public reuse, modification, or redistribution.
+
+Redistribution, resale, repackaging, rebranding, or claiming Cosmic Pulse as your own work is not permitted.
+
+Third-party components included with future official builds will remain subject to their respective licenses and notices, which will be provided with release packages where required.
 
 ## Star Citizen disclaimer
 
@@ -256,6 +260,6 @@ Cosmic Pulse is an independent, unofficial fan-made utility and is not affiliate
 
 ## Creator
 
-**Lordkoii**
+Created and maintained by **Lordkoii**.
 
 Thanks for following Cosmic Pulse and helping shape what comes next.
