@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Lordkoii/Cosmic-Pulse/b2a835ec69525f18e47ab7942474bd3ff53d2486/assets/cosmic-pulse-banner.jpg"
+  <img src="assets/cosmic-pulse-banner.gif"
        alt="Cosmic Pulse — Star Citizen Performance & Reliability Forensics"
        width="100%">
 </p>
