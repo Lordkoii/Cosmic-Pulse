@@ -113,15 +113,24 @@ Current alpha.7 implementation:
 - preserve the exact process-termination timestamp while the late-evidence window is open
 - merge immediate and delayed forensic evidence without duplicating the same diagnostic signature
 - show a non-blocking `COLLECTING EXIT EVIDENCE` state while the post-exit evidence window is active
-- automated regression coverage for normal exits, documented crash codes, unknown non-zero exits, Launcher abnormal-exit evidence, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, external-evidence classification, late-evidence enrichment, crash-handler checkpointing, fresh payload detection, TDR context handling, and contradictory-evidence classification
+- compare non-clean incident signatures against up to the 40 most recent prior local session files without loading full telemetry histories
+- keep LIVE / PTU / EPTU incident histories separated when channel context is available
+- match recurring incidents using termination family, exit-code state, independent failure-evidence families, active/recovered precursor shape, and conservative PulseCheck context
+- normalize older alpha.7 unknown non-zero exit classifications into the current unresolved-exit semantics so historical sessions remain comparable after classifier refinements
+- normalize Windows Application Error and Windows Error Reporting into the same application-failure family while keeping distinct Star Citizen crash signatures separate
+- treat Star Citizen build as recurrence context rather than a hard match requirement so a repeated pattern across game patches can be surfaced without implying common cause
+- exclude clean normal exits, monitoring interruptions, recorder interruptions, and context-only TDR evidence from recurring-incident classification
+- surface recurring-pattern evidence in Incident Forensics with the prior-match count, reviewed-incident count, latest match time, and same-build/different-build context
+- adjust the suggested next test for a recurring incident toward changing one variable at a time while explicitly stating that recurrence does not prove a shared root cause
+- dedicated incident-history regression suite validated legacy alpha.7 normalization, channel isolation, build context, current-session exclusion, Windows failure-family normalization, recovered-vs-active event separation, TDR context-only behavior, and clean-normal-exit exclusion on Windows
+- automated regression coverage for normal exits, documented crash codes, unknown non-zero exits, Launcher abnormal-exit evidence, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, external-evidence classification, late-evidence enrichment, crash-handler checkpointing, fresh payload detection, TDR context handling, contradictory-evidence classification, and recurring incident-signature comparison
 
-Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause. A non-zero process code that is not a documented RSI crash code is also treated as unresolved unless another Star Citizen-specific evidence source corroborates it. A clean exit code that conflicts with independent failure evidence is now reported explicitly as unresolved contradictory evidence rather than being forced into either the normal or abnormal bucket. Windows display-driver recovery is currently retained as context only until real-world sessions establish how reliably it should influence classification.
+Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause. A non-zero process code that is not a documented RSI crash code is also treated as unresolved unless another Star Citizen-specific evidence source corroborates it. A clean exit code that conflicts with independent failure evidence is now reported explicitly as unresolved contradictory evidence rather than being forced into either the normal or abnormal bucket. Windows display-driver recovery is currently retained as context only until real-world sessions establish how reliably it should influence classification. Repeated incident signatures are treated as evidence of repeatability, not proof that separate occurrences share one root cause.
 
 Still planned for later incident-forensics passes:
 
 - deeper parsing of crash-handler payload/GPU diagnostic contents after real-world artifacts are validated
 - additional Windows System-log failure signatures beyond Display Event 4101
-- recurring incident-signature comparison across sessions
 - richer crash/driver-reset signatures as real-world evidence is validated
 
 Possible later event signatures:
