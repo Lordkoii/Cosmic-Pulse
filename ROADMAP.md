@@ -56,7 +56,7 @@ If not, it is probably outside the core scope.
 - zero-sample acquisition sessions discarded
 - persistence and lifecycle regression coverage
 
-### v0.1.0-alpha.6 — Event Detection
+### v0.1.0-alpha.6 — Pulse Events
 
 - elevated and critical memory-pressure events
 - memory-pressure recovery
@@ -65,174 +65,137 @@ If not, it is probably outside the core scope.
 - event deduplication while a detected condition remains active
 - immediate `performance_event` persistence alongside raw telemetry
 - severity, timestamp, summary, and supporting evidence stored with each event
-- automated regression coverage for event entry, recovery, deduplication, and persistence
+- automated regression coverage for entry, recovery, deduplication, and persistence
 
 Alpha.6 establishes **when something changed** without claiming root cause.
 
-## Current development
+### v0.1.0-alpha.7 — Incident Forensics — validated
 
-### v0.1.0-alpha.7 — Incident Forensics
+Alpha.7 established the first end-of-session failure-investigation workflow on top of the recorder and event timeline.
 
-Build the first end-of-session failure-investigation workflow on top of the validated recorder and event timeline.
-
-Current alpha.7 implementation:
+Validated termination and evidence handling:
 
 - preserve a rolling final 60-second forensic review window
 - capture session termination reason and Windows process exit code when available
-- distinguish normal exits, evidence-backed abnormal exits, process disappearance, recorder interruption, and Cosmic Pulse closing before the game
+- distinguish normal exits, evidence-backed abnormal exits, unresolved non-zero exits, process disappearance, monitoring interruption, and recorder interruption
 - avoid treating an unknown non-zero process exit code as a crash by itself
-- keep unknown non-zero codes in `SESSION END REVIEW` unless corroborating crash evidence is available
 - detect explicit contradictory termination evidence instead of forcing one source to win
-- classify exit code `0` plus independent Star Citizen/Windows failure evidence as `CONFLICTING TERMINATION EVIDENCE` with Medium confidence
-- preserve a visible contradiction statement identifying the clean process exit and the independent failure-evidence source(s)
-- provide a repeat-test recommendation for contradictory cases rather than silently preferring the exit code or diagnostic record
-- keep context-only evidence such as Windows Display Event 4101/TDR from triggering the contradictory state by itself
+- classify exit code `0` plus independent Star Citizen/Windows failure evidence as `CONFLICTING TERMINATION EVIDENCE`
+- keep context-only evidence such as Windows Display Event 4101/TDR from overriding a clean exit by itself
 - correlate recent Pulse Events with the termination timeline
 - treat recovered warning conditions as historical evidence rather than active pre-exit precursors
-- summarize frame-time, system-memory, GPU, and final PulseCheck evidence from the review window
-- persist an `incident_report` record before `session_end`
-- keep the incident review visible in the app after Star Citizen closes
-- provide a cautious next diagnostic test without claiming an unsupported root cause
-- show live session duration in the status row
-- correlate the current Star Citizen `Game.log` when it contains recognized crash evidence
-- recognize documented Star Citizen crash signatures such as access violation, CryEngine watchdog/fatal, out-of-system-memory, and GPU-crash codes
-- correlate RSI Launcher `log.log` abnormal-exit records written during the tracked Star Citizen session
-- checkpoint the Launcher log when a session begins so stale entries from earlier runs are not reused
-- correlate Windows Application Error, Windows Error Reporting, and Application Hang records near termination
-- scope Windows application evidence to the tracked Star Citizen process ID when the event record exposes one
-- checkpoint `%LOCALAPPDATA%\Star Citizen` crash-handler artifacts when a session begins so stale crash files from earlier runs are not reused
-- detect a newly generated or updated crash-handler `payload.zip`, loose `gpu_error.log`, or crash-handler `game.log` during the tracked session
-- inspect crash-handler payload archive metadata and entry names read-only without extracting the archive or modifying crash files
-- treat fresh Star Citizen crash-handler artifacts as independent Star Citizen-specific crash evidence
-- correlate Windows System `Display` Event 4101 as display-driver timeout/recovery context near session termination
-- preserve Windows TDR evidence as system-wide context without allowing it by itself to override a clean Star Citizen exit
-- real-machine clean-exit validation confirmed the added crash-handler/TDR collectors do not introduce false crash evidence into a normal exit-code `0` session
-- preserve external forensic evidence structurally in `incident_report` records
-- distinguish an abnormal exit with independent diagnostic evidence from one supported only by telemetry precursors
-- hold the recorder open for a 4-second post-exit evidence window so late RSI Launcher, `Game.log`, crash-handler, or Windows diagnostic records can be included before the incident is finalized
-- preserve the exact process-termination timestamp while the late-evidence window is open
-- merge immediate and delayed forensic evidence without duplicating the same diagnostic signature
-- show a non-blocking `COLLECTING EXIT EVIDENCE` state while the post-exit evidence window is active
-- compare non-clean incident signatures against up to the 40 most recent prior local session files without loading full telemetry histories
-- keep LIVE / PTU / EPTU incident histories separated when channel context is available
-- match recurring incidents using termination family, exit-code state, independent failure-evidence families, active/recovered precursor shape, and conservative PulseCheck context
-- normalize older alpha.7 unknown non-zero exit classifications into the current unresolved-exit semantics so historical sessions remain comparable after classifier refinements
-- normalize Windows Application Error and Windows Error Reporting into the same application-failure family while keeping distinct Star Citizen crash signatures separate
-- treat Star Citizen build as recurrence context rather than a hard match requirement so a repeated pattern across game patches can be surfaced without implying common cause
-- exclude clean normal exits, monitoring interruptions, recorder interruptions, and context-only TDR evidence from recurring-incident classification
-- surface recurring-pattern evidence in Incident Forensics with the prior-match count, reviewed-incident count, latest match time, and same-build/different-build context
-- adjust the suggested next test for a recurring incident toward changing one variable at a time while explicitly stating that recurrence does not prove a shared root cause
-- dedicated incident-history regression suite validated legacy alpha.7 normalization, channel isolation, build context, current-session exclusion, Windows failure-family normalization, recovered-vs-active event separation, TDR context-only behavior, and clean-normal-exit exclusion on Windows
-- automated regression coverage for normal exits, documented crash codes, unknown non-zero exits, Launcher abnormal-exit evidence, abnormal exits with precursors, recovered conditions, the 60-second boundary, incident persistence, Game.log signatures, Windows event parsing, external-evidence classification, late-evidence enrichment, crash-handler checkpointing, fresh payload detection, TDR context handling, contradictory-evidence classification, and recurring incident-signature comparison
+- summarize final-window frame time, system memory, GPU, PulseCheck, focus, and workload context
+- persist an `incident_report` before `session_end`
+- keep the incident review visible after Star Citizen closes
+- provide a cautious next diagnostic test without claiming unsupported root cause
 
-Alpha.7 deliberately distinguishes **correlation from causation**. An event or crash signature occurring near an abnormal exit is reported as evidence, not automatically as proof of the underlying root cause. A non-zero process code that is not a documented RSI crash code is also treated as unresolved unless another Star Citizen-specific evidence source corroborates it. A clean exit code that conflicts with independent failure evidence is now reported explicitly as unresolved contradictory evidence rather than being forced into either the normal or abnormal bucket. Windows display-driver recovery is currently retained as context only until real-world sessions establish how reliably it should influence classification. Repeated incident signatures are treated as evidence of repeatability, not proof that separate occurrences share one root cause.
+Validated external evidence sources:
 
-Still planned for later incident-forensics passes:
+- current Star Citizen `Game.log`
+- documented Star Citizen access-violation, CryEngine watchdog/fatal, out-of-system-memory, GPU-crash, breakpoint, and frozen-close signatures
+- RSI Launcher `log.log` abnormal-exit records checkpointed to the tracked session
+- Windows Application Error, Windows Error Reporting, and Application Hang records
+- tracked-PID scoping for Windows records when PID metadata is available
+- `%LOCALAPPDATA%\Star Citizen` crash-handler artifact checkpointing
+- fresh `payload.zip`, `gpu_error.log`, and crash-handler `game.log` detection
+- read-only `payload.zip` metadata / entry-name inspection without extraction
+- Windows System `Display` Event 4101/TDR context
+- four-second post-exit evidence enrichment for records written after process termination
+- immediate/delayed evidence deduplication
 
-- deeper parsing of crash-handler payload/GPU diagnostic contents after real-world artifacts are validated
+Validated recurring incident intelligence:
+
+- compare non-clean incident signatures against up to 40 recent local session files without loading full telemetry histories
+- isolate LIVE / PTU / EPTU histories when channel context exists
+- match termination family, exit-code state, independent evidence families, active/recovered event shape, and conservative PulseCheck context
+- normalize legacy alpha.7 unknown-nonzero semantics into the current unresolved-exit family
+- normalize Windows Application Error and WER into the same application-failure family without collapsing distinct Star Citizen crash signatures
+- treat Star Citizen build as context rather than a hard match requirement
+- exclude clean normal exits, interruptions, and context-only TDR from recurring-incident classification
+- surface prior-match count, reviewed-incident count, latest match, and same-build/different-build context
+- change the next-test guidance toward one-variable-at-a-time testing when a pattern repeats
+- explicitly state that recurrence is evidence of repeatability, not proof of a shared root cause
+
+Validated workload / focus context:
+
+- per-process Windows `GPU Engine` attribution for Star Citizen when available
+- Star Citizen-specific GPU utilization separated from adapter-wide activity
+- strongest other non-system GPU workload on the same adapter retained as context
+- conservative 20% first-pass concurrent-workload significance threshold
+- adapter-wide fallback when per-process attribution is unavailable
+- no fake `adapter - Star Citizen` subtraction
+- foreground/background context based only on owning PID/process name; no window-title capture
+- final-window workload and focus summaries remain contextual and do not establish contention or cause
+- background GPU counter sampling prevents expensive Windows counter enumeration from continuously blocking the WPF UI
+
+Validated environment fingerprinting:
+
+- schema-v5 `environment_fingerprint` record at real session start
+- Star Citizen executable file/product version, size, and modification time
+- Windows build, CPU, logical CPU count, and installed RAM
+- display-driver metadata and PresentMon version
+- `USER.cfg` presence, selected `g_language`, metadata, and SHA-256 without recording contents
+- selected localization `global.ini` metadata and SHA-256 without recording contents
+- `Data.p4k` size/modification metadata without hashing or unpacking it
+- no absolute Star Citizen installation paths stored in the fingerprint
+
+Real-machine validation completed for alpha.7 includes clean exit-code `0` sessions, active-vs-recovered memory-pressure behavior, concurrent GPU workload attribution, foreground/focus persistence, recurring incident signatures, and the post-GPU-threading responsiveness pass.
+
+Alpha.7 deliberately distinguishes **correlation from causation**. Crash signatures, telemetry precursors, foreground state, concurrent workloads, and repeated incidents are evidence to preserve and test—not automatic proof of root cause.
+
+Natural-evidence follow-ups remain available for later refinement without blocking alpha.7 closure:
+
+- deeper parsing of authentic crash-handler payload / GPU diagnostic contents after a natural Star Citizen crash provides validated artifacts
 - additional Windows System-log failure signatures beyond Display Event 4101
-- richer crash/driver-reset signatures as real-world evidence is validated
+- richer crash/driver-reset signatures as real-world evidence is encountered
+- environment-fingerprint comparison between known-good and degraded/failed sessions
+- broader validation of concurrent-workload significance thresholds
 
-Possible later event signatures:
-
-- dedicated short-duration frame-time spike / stutter events
-- GPU-utilization collapse events meaningful independently of a broader degradation event
-- richer memory-transition staging
-
-### Near-term telemetry intelligence — Concurrent Workload Awareness
-
-Adapter-wide GPU telemetry is useful system evidence, but it does not by itself prove that Star Citizen created all observed GPU load. Cosmic Pulse now has a read-only attribution layer that separates Star Citizen GPU activity from broader activity when Windows exposes reliable per-process GPU-engine counters.
-
-Validated implementation:
-
-- enumerate Windows `GPU Engine` performance-counter instances and parse their process IDs and adapter LUIDs
-- identify the GPU adapter LUIDs actively used by the tracked Star Citizen process
-- calculate Star Citizen utilization from the busiest GPU engine attributed to that process
-- preserve adapter-wide busiest-engine activity separately from Star Citizen-specific activity
-- identify the strongest other non-system process using the same Star Citizen GPU adapter when process metadata remains available
-- mark significant concurrent workload context when another application reaches the conservative first-pass threshold of 20% GPU-engine activity
-- feed Star Citizen-specific GPU utilization into PulseCheck and Pulse Events when attribution is available, falling back to the existing adapter-wide signal when it is not
-- preserve the latest Star Citizen attribution through short Windows counter-refresh gaps instead of briefly feeding total adapter load into PulseCheck
-- avoid deriving a fake `adapter - Star Citizen` utilization value because separate GPU engines can be busy independently
-- report concurrent workload as context rather than automatically declaring GPU contention or root cause
-- persist Star Citizen GPU, adapter GPU, strongest-other-process GPU, process name, concurrent-workload state, and adapter ID in schema-v5 telemetry records
-- preserve a rolling 60-second GPU-attribution history for post-session context
-- surface the Star Citizen / adapter / other-workload split directly in the existing GPU telemetry card without redesigning the shell
-- append meaningful concurrent-workload context to the visible Incident Forensics review while explicitly stating that the observation does not establish contention
-- automated regression coverage for PID/LUID parsing, schema-v5 workload persistence, and rolling workload-summary behavior
-- real-machine validation completed with both a Star Citizen-only baseline and a deliberate second-game GPU workload; the second application could peak substantially above Star Citizen while Star Citizen remained independently attributed
-
-Foreground / Focus Awareness adds another read-only layer of context around those workload changes:
-
-- use the Windows foreground-window owner PID to determine whether Star Citizen is foreground or background
-- display `Foreground` or `Background: <process>` beside the tracked Star Citizen PID while the session is live
-- record foreground/background state, foreground process ID, and foreground process name in schema-v5 telemetry
-- never capture foreground-window titles or window contents
-- add background/focus context directly to sustained performance-degradation and recovery event evidence when relevant
-- summarize focus state across the final 60-second Incident Forensics window without changing the exit classification by itself
-- keep focus state contextual: being backgrounded or having another application foreground does not prove that it caused a performance change
-- automated regression coverage verifies event context, final-window forensic context, and privacy-light persistence without window titles
-- real-machine validation completed on a single-monitor setup: persisted telemetry showed consecutive `StarCitizen` foreground samples followed by background transitions to Cosmic Pulse, PowerShell, and Explorer exactly as focus changed
-
-Still planned:
-
-- refine active-adapter naming and driver association on multi-GPU systems
-- persist a compact workload-summary object directly with future report-layer output rather than relying only on raw schema-v5 telemetry
-- summarize workload and focus context in Pulse Report and PulseCompare
-- validate the 20% significance threshold across more real sessions before allowing concurrent workload to alter diagnostic confidence
-
-The intent is to make GPU findings more defensible: Cosmic Pulse can observe another GPU workload and whether Star Citizen was foreground without assuming that the workloads were competing for the same engine or that foreground state caused a performance change.
-
-### Near-term forensic context — Environment Fingerprinting
-
-Cosmic Pulse now records a read-only snapshot of the local Star Citizen environment when a real Star Citizen session begins. Cosmic Pulse does **not** modify `USER.cfg`, localization files, `Data.p4k`, or other Star Citizen files.
-
-First-pass implementation:
-
-- schema-v5 sessions include a structured `environment_fingerprint` record immediately after `session_start`
-- record Star Citizen executable name, file/product version when available, size, and modification time
-- record Windows description/build, CPU name, logical-processor count, and installed physical memory
-- record installed Windows display-driver metadata and the PresentMon version used by Cosmic Pulse
-- detect `USER.cfg`, parse the configured `g_language` value, and preserve only relative path, size, modification time, and SHA-256 fingerprint
-- detect `Data/Localization/<language>/global.ini` files, identify the localization selected by `g_language`, and preserve only relative path, size, modification time, and SHA-256 fingerprint
-- record `Data.p4k` size and modification time without hashing or unpacking the file
-- use the same query-limited Windows executable-path fallback already proven by Pulse Core when `Process.MainModule` is unavailable
-- store no `USER.cfg` or localization file contents and no absolute Star Citizen installation paths in the environment record
-- automated regression coverage verifies read-only capture, localization selection, hashing, schema-v5 persistence, and privacy-safe output
-
-Still planned:
-
-- compare fingerprints between known-good and degraded/failed sessions
-- surface meaningful environment changes in Incident Forensics and Pulse Report
-- highlight changes such as driver updates, `USER.cfg` edits, localization replacement, or a patched `Data.p4k` as context rather than proof of causation
-- preserve environment-difference summaries for PulseCompare
-- refine active-GPU/driver association where Windows exposes sufficiently reliable metadata
-
-Examples of intended future findings include **“the GPU driver changed since the last stable session,” “custom localization predates the current game build,”** or **“USER.cfg changed between the stable and failed runs.”** Cosmic Pulse should report those observations without claiming they caused a failure unless independent evidence supports that conclusion.
-
-## Forensic intelligence sequence
+## Current development
 
 ### v0.1.0-alpha.8 — Pulse Report
 
-Turn raw session evidence into an understandable report.
+Turn the validated session evidence into an understandable, stable report layer.
 
-A report should answer:
+A Pulse Report should answer:
 
-1. What happened?
-2. When did it start?
-3. What changed beforehand?
-4. What is the likely cause?
-5. How confident is that conclusion?
-6. What should the player test next?
+1. **What happened?**
+2. **When did it happen / what changed beforehand?**
+3. **What does the evidence support?**
+4. **What evidence supports that assessment?**
+5. **Is any evidence contradictory?**
+6. **How confident is the assessment?**
+7. **What should the player test next?**
 
-Planned outputs:
+First alpha.8 foundation now implemented:
 
-- event timeline
-- likely cause and confidence
-- supporting evidence
-- contradictory evidence where relevant
-- recommended next diagnostic test
-- local export suitable for sharing in support / community discussions
+- project/version metadata advanced to `v0.1.0-alpha.8`
+- structured `PulseReport` contract
+- structured timeline item contract
+- separate supporting-evidence and contradictory-evidence collections
+- deterministic oldest-to-newest timeline ordering
+- evidence trimming/deduplication for report presentation
+- conservative adapter from alpha.7 `IncidentReport` output
+- normal exits explicitly avoid inferring a crash/performance root cause
+- contradictory termination reports remain unresolved rather than being presented as a probable cause
+- recurring/correlated abnormal reports preserve the statement that repeatability/correlation does not prove root cause
+- recommended alpha.7 next-test guidance carries into the report unchanged
+- dedicated Pulse Report regression project
+- Pulse Report regression suite added to Windows CI
+
+Near-term alpha.8 work:
+
+- source the complete final-window Pulse Event timeline into the structured report instead of relying only on existing UI history
+- add report summaries for environment fingerprint changes and concurrent workload/focus context
+- design the in-app Pulse Report view without disrupting the validated live telemetry shell
+- distinguish a report's **session outcome** from any stronger **likely-cause assessment** so the UI cannot accidentally present an abnormal exit title as a proven cause
+- persist/export a stable report representation only after the report contract is regression-stable
+- add a local export suitable for support/community sharing
+- include privacy-safe environment/build context needed to make a shared report interpretable
+- keep export explicit and local; no automatic upload/cloud account requirement
+- add regression coverage for rendering/export semantics and privacy boundaries
+
+The alpha.8 presentation layer must **not** weaken alpha.7's evidence rules. If the evidence is unresolved, contradictory, or merely correlated, Pulse Report must say so.
 
 ### v0.1.0-alpha.9 — PulseCompare
 
@@ -245,8 +208,19 @@ Examples:
 - driver changes
 - Windows configuration changes
 - hardware changes
+- known-good vs degraded/failed environment fingerprints
 
-The goal is to answer **whether the change actually improved the Star Citizen experience**, using recorded evidence rather than subjective impressions alone.
+The goal is to answer **whether a controlled change actually improved the Star Citizen experience**, using recorded evidence rather than subjective impressions alone.
+
+Planned comparison context includes:
+
+- FPS / frame-time distributions
+- PulseCheck classifications and confidence
+- Pulse Events and incident outcomes
+- Star Citizen-specific vs adapter-wide GPU behavior
+- concurrent workload / foreground context
+- environment fingerprint differences
+- repeatability across multiple sessions where enough data exists
 
 ## Public alpha target
 
@@ -262,21 +236,33 @@ Launch Cosmic Pulse
 Launch Star Citizen
   ↓
 Cosmic Pulse records and analyzes automatically
+  ↓
+Review / export Pulse Report
 ```
 
 Public users should not need Git, PowerShell, a .NET SDK, or manual developer setup.
 
+Pre-public UX / packaging work includes:
+
+- self-contained Windows x64 packaging
+- reliable application/taskbar identity and icon behavior
+- system-tray integration with explicit Exit
+- optional start-minimized / Start with Windows behavior rather than silent startup changes
+- third-party notices / PresentMon redistribution verification
+- tested upgrade/removal behavior
+- public release notes and SHA-256 verification information
+
 ## Longer-term possibilities
 
-Only after the forensic core is reliable:
+Only after the forensic core and report layer are reliable:
 
-- session history and searchable incident archive
+- searchable session / incident archive
 - patch-to-patch comparisons
 - hardware/configuration baselines
-- richer per-core / thread correlation where Windows telemetry permits it safely
+- richer per-core/thread correlation where Windows telemetry permits it safely
 - stutter classification
 - community-shareable anonymized diagnostic reports with explicit user opt-in
-- local rules / signature updates without weakening privacy or safety
+- local rules/signature updates without weakening privacy or safety
 
 ## Non-goals
 
