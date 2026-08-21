@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.7 — Incident Forensics</code>
+  <strong>Current development milestone:</strong> <code>v0.1.0-alpha.8 — Pulse Report</code>
 </p>
 <!-- AUTO_HERO_RELEASE_END -->
 
@@ -89,92 +89,69 @@ Star Citizen session
              PULSE REPORT
 ```
 
-A future finding should read more like this than a generic monitoring dashboard:
-
-> **Memory Pressure — High Confidence**  
-> System memory crossed 90% before sustained frame-time degradation began. GPU utilization fell during the slowdown, making GPU saturation an unlikely primary cause.
-
-Cosmic Pulse should also be comfortable returning **Undetermined** when the available evidence is not strong enough for a responsible conclusion.
+Cosmic Pulse should be comfortable returning **Undetermined** when the available evidence is not strong enough for a responsible conclusion.
 
 ## Core systems
 
 ### Pulse Core — Validated foundation
 
-The live telemetry layer currently provides:
-
-- Star Citizen process detection
-- LIVE / PTU / EPTU environment identification
-- process CPU monitoring
-- process memory monitoring
-- system memory monitoring
-- external PresentMon-based live FPS telemetry
-- rolling PresentMon-based frame-time telemetry
-- Windows-native GPU utilization telemetry
-- dedicated VRAM usage and GPU identity
+The live telemetry layer provides Star Citizen process/channel detection, process CPU/RAM, system RAM, PresentMon FPS/frame time, Windows-native GPU telemetry, GPU identity, and dedicated VRAM usage.
 
 ### PulseCheck — Alpha.4 validated
 
-The first performance-intelligence layer correlates a rolling telemetry window rather than judging a single reading.
-
-Current conservative classifications:
-
-- CPU Limited
-- GPU Limited
-- Memory Pressure
-- Possibly Capped / VSync / menu-limited behavior
-- Undetermined
-
-Each ready result includes a confidence level and supporting evidence. The classifier also has automated regression scenarios so known signatures cannot silently change without failing CI.
+The rolling performance-intelligence layer classifies CPU Limited, GPU Limited, Memory Pressure, Possibly Capped, or Undetermined with visible confidence and supporting evidence.
 
 ### Pulse Recorder — Alpha.5 validated
 
-The local black-box foundation records one append-only telemetry snapshot per second while Star Citizen is running.
-
-Records are flushed immediately for crash resilience and currently preserve FPS, frame time, CPU, GPU, process RAM, system RAM, VRAM, and PulseCheck state. Session start/end lifecycle markers and zero-sample acquisition cleanup are covered by regression tests.
+The local black box records append-only telemetry snapshots and session lifecycle evidence with immediate flush behavior for crash resilience.
 
 ### Pulse Events — Alpha.6 validated
 
-The first timeline-intelligence layer identifies **when a sustained condition changes** without claiming root cause.
+The timeline layer detects sustained memory pressure/recovery, GPU saturation/recovery, and performance degradation/recovery without assigning root cause.
 
-Current event signatures include:
+### Incident Forensics — Alpha.7 validated
 
-- elevated and critical memory pressure
-- memory-pressure recovery
-- sustained GPU saturation
-- GPU-saturation recovery
-- sustained performance degradation using pre-event vs recent FPS/frame-time windows
-- performance recovery toward the pre-event baseline
+Alpha.7 established the end-of-session investigation layer and was closed after regression and real-machine validation.
 
-Detected events are immediately persisted as `performance_event` records alongside the raw telemetry, with severity, timestamp, summary, and supporting measurements. Repeated samples do not continuously duplicate an already-active condition.
+Validated behavior includes:
 
-### Incident Forensics — Alpha.7 in development
+- final 60-second telemetry/event review window
+- Windows process exit-code preservation
+- conservative normal, abnormal, unresolved, interrupted, and contradictory termination handling
+- unknown non-zero exit codes withheld from crash classification unless corroborated
+- Star Citizen `Game.log` and RSI Launcher abnormal-exit evidence
+- Windows Application Error, WER, Application Hang, and contextual Display/TDR evidence
+- Star Citizen crash-handler artifact checkpointing and fresh-artifact detection
+- four-second post-exit evidence enrichment
+- active-vs-recovered Pulse Event precursor handling
+- read-only environment fingerprinting
+- Star Citizen-specific GPU attribution and concurrent-workload context
+- foreground/focus awareness without capturing window titles
+- recurring incident-signature comparison across recent local session history
+- repeatability guidance that explicitly does not claim repeated incidents share one root cause
+- Windows activation diagnostics and background GPU sampling to avoid expensive counter enumeration blocking the WPF UI
 
-The first end-of-session investigation layer reviews the **final 60 seconds** of recorded evidence when a Star Citizen session ends.
+Real-session validation confirmed clean exits remain clean with the expanded collectors active, recovered warnings are not falsely promoted to active precursors, concurrent workloads stay contextual, and a repeated abnormal termination pattern can be recognized from local history without claiming causation.
 
-Current alpha.7 behavior includes:
+### Pulse Report — Alpha.8 in development
 
-- session-duration tracking
-- process termination reason and Windows exit-code capture when available
-- normal-exit vs abnormal/non-zero-exit vs process-unavailable handling
-- correlation of recent Pulse Events with the termination timeline
-- recovered warnings excluded from active pre-exit precursor calls
-- final-window frame-time, RAM, GPU, and PulseCheck evidence summaries
-- persistent `incident_report` records written before `session_end`
-- incident review retained visibly after Star Citizen closes
-- a cautious suggested next test without claiming unsupported root cause
-- correlation of the current user-accessible Star Citizen `Game.log`
-- recognition of documented Star Citizen crash signatures including access violation, CryEngine watchdog/fatal, out-of-system-memory, and GPU-crash codes
-- correlation of nearby Windows Application Error, Windows Error Reporting, and Application Hang records
-- process-ID scoping for Windows evidence when the event exposes a PID
-- structured external evidence preserved in schema-v2 incident records
+Alpha.8 turns the validated evidence stack into a stable user-facing report layer.
 
-Alpha.7 deliberately reports **precursors and correlations**, not automatic crash causes. A crash signature or performance event near a non-zero process exit is evidence worth preserving and testing, but it is not automatically treated as proof of the underlying root cause.
+The first report foundation defines a structured result that separates:
 
-The next forensic refinements include richer crash-handler artifacts, driver-reset/System-log evidence, delayed Windows-event enrichment, and contradictory-evidence handling. Concurrent-workload awareness is also planned so system-wide GPU saturation is not incorrectly attributed solely to Star Citizen when other GPU-intensive applications are active.
+- session outcome
+- confidence
+- what happened
+- what changed beforehand
+- evidence-supported assessment
+- supporting evidence
+- contradictory evidence
+- ordered event timeline
+- recommended next diagnostic test
 
-### Pulse Report — Planned
+The report layer deliberately inherits alpha.7's conservative evidence rules rather than inventing a stronger causal conclusion during presentation.
 
-Turn a session or incident into a concise explanation containing the event timeline, probable cause, confidence, evidence, and a recommended next test.
+Planned alpha.8 work includes the report view, richer timeline presentation, environment/workload context summaries, and a local export suitable for support or community sharing.
 
 ### PulseCompare — Planned
 
@@ -189,10 +166,10 @@ Cosmic Pulse is in **private alpha development** and is being built incrementall
 The current development milestone is:
 
 ```text
-v0.1.0-alpha.7 — Incident Forensics
+v0.1.0-alpha.8 — Pulse Report
 ```
 
-The current emphasis is **responsible multi-source incident correlation**: preserve the final telemetry window, distinguish normal and abnormal termination, correlate available Star Citizen and Windows diagnostic evidence, and keep observed evidence separate from unsupported root-cause claims.
+The current emphasis is turning the validated telemetry/event/forensic evidence into an understandable report **without weakening the distinction between correlation and causation**.
 
 There is **no public build available yet**. Public downloads will appear here only after a build has been tested and is ready for community evaluation.
 
