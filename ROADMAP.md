@@ -167,7 +167,7 @@ A Pulse Report should answer:
 6. **How confident is the assessment?**
 7. **What should the player test next?**
 
-First alpha.8 foundation now implemented:
+Alpha.8 foundation now implemented:
 
 - project/version metadata advanced to `v0.1.0-alpha.8`
 - structured `PulseReport` contract
@@ -180,12 +180,15 @@ First alpha.8 foundation now implemented:
 - contradictory termination reports remain unresolved rather than being presented as a probable cause
 - recurring/correlated abnormal reports preserve the statement that repeatability/correlation does not prove root cause
 - recommended alpha.7 next-test guidance carries into the report unchanged
+- complete final 60-second Pulse Event timeline buffer for report construction while the live panel remains limited to its compact recent-event view
+- exact 60-second boundary inclusion with older/future events excluded from the report timeline
+- Pulse Report object now built automatically after both ordinary and late-evidence incident finalization
+- ORL-inspired typography foundation: Inter-first UI text with Windows-native fallbacks and a dedicated mono family for telemetry/status data
 - dedicated Pulse Report regression project
 - Pulse Report regression suite added to Windows CI
 
 Near-term alpha.8 work:
 
-- source the complete final-window Pulse Event timeline into the structured report instead of relying only on existing UI history
 - add report summaries for environment fingerprint changes and concurrent workload/focus context
 - design the in-app Pulse Report view without disrupting the validated live telemetry shell
 - distinguish a report's **session outcome** from any stronger **likely-cause assessment** so the UI cannot accidentally present an abnormal exit title as a proven cause
@@ -222,6 +225,26 @@ Planned comparison context includes:
 - environment fingerprint differences
 - repeatability across multiple sessions where enough data exists
 
+## Pre-public UX / Visual Polish
+
+After alpha.9, perform a dedicated application-wide UI/UX pass before the first broad tester build. This is a deliberate milestone rather than incidental cleanup during feature work.
+
+Planned polish areas:
+
+- complete Inter + mono typography audit across live telemetry, Incident Forensics, Pulse Report, and PulseCompare
+- spacing, alignment, card-height, wrapping, and truncation consistency
+- high-DPI behavior and minimum-window/resizing validation
+- presentation-friendly process names while preserving raw process names in recorded evidence where useful
+- taskbar/application identity and icon consistency
+- system-tray integration with explicit Exit
+- optional start-minimized / Start with Windows behavior rather than silent startup changes
+- hover/focus/keyboard states and general Windows interaction polish
+- visual consistency between PulseCheck, Pulse Events, Incident Forensics, Pulse Report, and PulseCompare
+- final Violet Frost palette audit so semantic warning/critical/healthy states remain readable
+- packaging/install/remove/upgrade tester experience
+
+The goal is to enter public testing with one coherent product surface rather than a collection of individually polished feature panels.
+
 ## Public alpha target
 
 The first public test build should feel like a product rather than a developer project.
@@ -242,12 +265,10 @@ Review / export Pulse Report
 
 Public users should not need Git, PowerShell, a .NET SDK, or manual developer setup.
 
-Pre-public UX / packaging work includes:
+Pre-public packaging work includes:
 
 - self-contained Windows x64 packaging
 - reliable application/taskbar identity and icon behavior
-- system-tray integration with explicit Exit
-- optional start-minimized / Start with Windows behavior rather than silent startup changes
 - third-party notices / PresentMon redistribution verification
 - tested upgrade/removal behavior
 - public release notes and SHA-256 verification information
